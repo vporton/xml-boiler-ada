@@ -63,5 +63,4 @@ library project Libxmlboiler is
       end case;
    end Builder;
 
-end Librdf;
-
+end Libxmlboiler;
