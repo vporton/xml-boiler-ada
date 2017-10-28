@@ -14,13 +14,23 @@ package Boiler.Options is
    package Recursive_Retrieval_Priority is
      new Ada.Containers.Ordered_Sets(Recursive_Retrieval_Priority_Order_Element);
 
+   type Recursive_Download_Options (Recursive_Download: Recursive_Download_Type) is
+      record
+         case Recursive_Download is
+            when None =>
+               null;
+            when others =>
+               Retrieval_Priority: Recursive_Retrieval_Priority.Set;
+         end case;
+      end record;
+
    -- In this version the same options are applied to all elements of the
    -- workflow, but in future we may increase "granularity" to have different
    -- options for different elements.
-   type Automatic_Workflow_Element_Options (Kind: Worklow_Kind) is
+   type Automatic_Workflow_Element_Options (Kind: Worklow_Kind;
+                                            Recursive_Download: Recursive_Download_Type) is
       record
-         Recursive_Download: Recursive_Download_Type;
-         Retrieval_Priority: Recursive_Retrieval_Priority.Set;
+         Recursive_Options: Recursive_Download_Options(Recursive_Download);
          case Kind is
             when Transformation =>
                Not_In_Target_Namespace: Not_In_Target_Namespace_Type;
