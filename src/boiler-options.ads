@@ -4,7 +4,7 @@ package Boiler.Options is
 
    type Worklow_Kind is (Transformation, Validation);
 
-   type Recursive_Download_Type is (Depth_First, Breadth_First);
+   type Recursive_Download_Type is (None, Depth_First, Breadth_First);
 
    type Validation_Order_Type is (Depth_First, Breadth_First);
 
