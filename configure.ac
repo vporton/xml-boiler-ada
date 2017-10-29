@@ -28,23 +28,13 @@ dnl LT_INIT
 # Find a tar command for 'make dist'
 AC_CHECK_PROGS(TAR, gnutar gtar tar)
 
-AC_ARG_WITH(ada, [  --with-ada              Enable the Ada interface], with_ada="$withval", with_ada="no")
-AC_MSG_CHECKING(Enable Ada API)
+AC_ARG_WITH(gprbuild,   [  --with-gprbuild(=gprbuild)   Ada builder], GPRBUILD="$withval")
+AC_ARG_WITH(gprclean,   [  --with-gprclean(=gprclean)   Ada cleaner], GPRCLEAN="$withval")
+AC_ARG_WITH(gprinstall, [  --with-gprbuild(=gprinstall) Ada installer], GPRINSTALL="$withval")
 
-if test "X$with_ada" != Xno; then
-  languages="$languages ada"
-fi
-AC_MSG_RESULT($with_ada)
-
-if test "X$with_ada" != Xno; then
-  AC_ARG_WITH(gprbuild,   [  --with-gprbuild(=gprbuild)   Ada builder], GPRBUILD="$withval")
-  AC_ARG_WITH(gprclean,   [  --with-gprclean(=gprclean)   Ada cleaner], GPRCLEAN="$withval")
-  AC_ARG_WITH(gprinstall, [  --with-gprbuild(=gprinstall) Ada installer], GPRINSTALL="$withval")
-
-  AC_CHECK_PROGS(GPRBUILD, gprbuild)
-  AC_CHECK_PROGS(GPRCLEAN, gprclean)
-  AC_CHECK_PROGS(GPRINSTALL, gprinstall)
-fi
+AC_CHECK_PROGS(GPRBUILD, gprbuild)
+AC_CHECK_PROGS(GPRCLEAN, gprclean)
+AC_CHECK_PROGS(GPRINSTALL, gprinstall)
 
 AC_SUBST(GPRBUILD)
 AC_SUBST(GPRCLEAN)
