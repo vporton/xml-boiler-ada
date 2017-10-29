@@ -40,6 +40,9 @@ AC_SUBST(GPRBUILD)
 AC_SUBST(GPRCLEAN)
 AC_SUBST(GPRINSTALL)
 
+AC_SUBST(GPRBUILDFLAGS)
+AC_ARG_VAR(GPRBUILDFLAGS, [Flags for gprbuild (such as [-cargs opts]])
+
 
 AM_MISSING_PROG(ACLOCAL, aclocal, $missing_dir)
 AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)
