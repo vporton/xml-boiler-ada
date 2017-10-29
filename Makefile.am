@@ -43,7 +43,7 @@ check-syntax:
 	$(GPRBUILD) libxmlboiler.gpr -c \
                  -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=check
 
-all-local: my-dynamic-lib my-static-lib
+all-local: my-dynamic-lib
 
 clean-local:
 	$(GPRCLEAN) -r libxmlboiler.gpr -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install
