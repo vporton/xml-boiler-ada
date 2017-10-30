@@ -4,7 +4,6 @@ with RDF.Redland.Node; use RDF.Redland.Node;
 with RDF.Redland.Statement; use RDF.Redland.Statement;
 with RDF.Redland.Storage; use RDF.Redland.Storage;
 with RDF.Redland.Stream; use RDF.Redland.Stream;
-with Boiler.Directories; use Boiler.Directories;
 
 package body Boiler.Global is
 
@@ -64,6 +63,11 @@ package body Boiler.Global is
             return False;
       end;
       return Is_Ancestor(Sub3, Super3);
+   end;
+
+   function Get_Directories (Global: Global_State_Type) return access constant Directories_Config_Type is
+   begin
+      return Global.Directories_Config'Unchecked_Access;
    end;
 
 end Boiler.Global;

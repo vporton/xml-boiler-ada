@@ -1,5 +1,5 @@
 with Ada.Finalization;
-with Boiler.Directories;
+with Boiler.Directories; use Boiler.Directories;
 with RDF.Redland.URI; use RDF.Redland.URI;
 private with Ada.Containers.Ordered_Maps;
 private with Generic_Directed_Graph;
@@ -9,6 +9,8 @@ private with Generic_Address_Order;
 package Boiler.Global is
 
    type Global_State_Type is limited private;
+
+   function Get_Directories (Global: Global_State_Type) return access constant Directories_Config_Type;
 
    function Is_Subclass (Global: Global_State_Type; Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
 
@@ -26,10 +28,9 @@ private
    use Sub_Classes_Graph;
    package URI_To_Access is new Ada.Containers.Ordered_Maps(URI_Type, Sub_Classes_Graph.Node);
 
-   -- FIXME: Should be made public?
    type Global_State_Type is new Ada.Finalization.Limited_Controlled with
       record
-         Directories_Config: Boiler.Directories.Directories_Config_Type;
+         Directories_Config: aliased Boiler.Directories.Directories_Config_Type;
 --           Initialization_Redland_World: Redland_World_Type;
          URIs_Map: URI_To_Access.Map;
       end record;
