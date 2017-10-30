@@ -44,7 +44,8 @@ package body Boiler.Global is
                end;
             begin
                Connect(Add_To_Map(Copy(Get_URI(Get_Subject(Statement)))),
-                       Add_To_Map(Copy(Get_URI(Get_Object (Statement)))));
+                       Add_To_Map(Copy(Get_URI(Get_Object (Statement)))),
+                       Acyclic => True);
             end;
          end loop;
       end;
