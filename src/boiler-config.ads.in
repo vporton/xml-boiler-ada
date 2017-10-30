@@ -1,5 +1,7 @@
 package Boiler.Config is
 
-   Data_Dir: constant String := "@datadir@";
+   Source_Dir: constant String := $srcdir;
+
+   Data_Dir: constant String := $datadir;
 
 end Boiler.Config;

@@ -30,17 +30,21 @@ endif
 GPRBUILD = @GPRBUILD@ --relocate-build-tree -p -s -we
 GPRCLEAN = @GPRCLEAN@
 GPRINSTALL = @GPRINSTALL@ --prefix=$(prefix) --relocate-build-tree
+GNATPREP = @GNATPREP@
 
-my-dynamic-lib:
+my-dynamic-lib: src/boiler-config.ads
 	$(GPRBUILD) libxmlboiler.gpr \
                  -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
-my-static-lib:
+my-static-lib: src/boiler-config.ads
 	$(GPRBUILD) libxmlboiler.gpr \
                  -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
+src/boiler-config.ads: src/boiler-config.ads.in
+	$(GNATPREP) -T -Dsrcdir=\"$(srcdir)\" -Ddatadir=\"$(datadir)\" $< $@
+
 check-syntax:
-	$(a) libxmlboiler.gpr -c \
+	$(GPRBUILD) libxmlboiler.gpr -c \
                  -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=check @GPRBUILDFLAGS@
 
 all-local: my-dynamic-lib

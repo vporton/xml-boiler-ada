@@ -31,14 +31,17 @@ AC_CHECK_PROGS(TAR, gnutar gtar tar)
 AC_ARG_WITH(gprbuild,   [  --with-gprbuild(=gprbuild)   Ada builder], GPRBUILD="$withval")
 AC_ARG_WITH(gprclean,   [  --with-gprclean(=gprclean)   Ada cleaner], GPRCLEAN="$withval")
 AC_ARG_WITH(gprinstall, [  --with-gprbuild(=gprinstall) Ada installer], GPRINSTALL="$withval")
+AC_ARG_WITH(gnatprep, [  --with-gnatprep(=gnatprep) Ada preprocessor], GNATPREP="$withval")
 
 AC_CHECK_PROGS(GPRBUILD, gprbuild)
 AC_CHECK_PROGS(GPRCLEAN, gprclean)
 AC_CHECK_PROGS(GPRINSTALL, gprinstall)
+AC_CHECK_PROGS(GNATPREP, gnatprep)
 
 AC_SUBST(GPRBUILD)
 AC_SUBST(GPRCLEAN)
 AC_SUBST(GPRINSTALL)
+AC_SUBST(GNATPREP)
 
 AC_SUBST(GPRBUILDFLAGS)
 AC_ARG_VAR(GPRBUILDFLAGS, [Flags for gprbuild (such as [-cargs opts]])
@@ -50,6 +53,6 @@ AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
 AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
 
 
-AC_CONFIG_FILES([Makefile src/boiler-config.ads])
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
