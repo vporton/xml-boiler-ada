@@ -23,7 +23,7 @@ private
    package Sub_Classes_Graph is new Generic_Directed_Graph(Null_Record,
                                                            Pool  => Null_Access'Storage_Pool, -- TODO: Use allocation-only simple pool
                                                            Equal => Null_Order.Equal,
-                                                           Less  => Null_Order.Less); -- FIXME: Is "<" properly defined?
+                                                           Less  => Null_Order.Less);
 
    use Sub_Classes_Graph;
    package URI_To_Access is new Ada.Containers.Ordered_Maps(URI_Type, Sub_Classes_Graph.Node);
