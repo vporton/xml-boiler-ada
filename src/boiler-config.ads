@@ -1,5 +1,7 @@
 package Boiler.Config is
 
-   Data_Dir: constant String := "${prefix}/share";
+   Source_Dir: constant String := ".";
+
+   Data_Dir: constant String := "/usr/local/stow/xml-boiler/share";
 
 end Boiler.Config;
