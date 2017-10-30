@@ -33,7 +33,7 @@ package body Boiler.Global is
                   Elt: constant URI_To_Access.Cursor := Find(Object.URIs_Map, URI);
                begin
                   if Elt /= No_Element then
-                     return Node(Element(Elt));
+                     return Element(Elt);
                   else
                      declare
                         The_Node: constant Node := new Null_Record'(null record);
