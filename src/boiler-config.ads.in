@@ -1,0 +1,5 @@
+package Boiler.Config is
+
+   Data_Dir: constant String := "@datadir@";
+
+end Boiler.Config;

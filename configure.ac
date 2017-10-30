@@ -50,6 +50,6 @@ AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
 AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
 
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/boiler-config.ads])
 
 AC_OUTPUT

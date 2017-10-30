@@ -33,15 +33,15 @@ GPRINSTALL = @GPRINSTALL@ --prefix=$(prefix) --relocate-build-tree
 
 my-dynamic-lib:
 	$(GPRBUILD) libxmlboiler.gpr \
-                 -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE)
+                 -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
 my-static-lib:
 	$(GPRBUILD) libxmlboiler.gpr \
-                 -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE)
+                 -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
 check-syntax:
-	$(GPRBUILD) libxmlboiler.gpr -c \
-                 -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=check
+	$(a) libxmlboiler.gpr -c \
+                 -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=check @GPRBUILDFLAGS@
 
 all-local: my-dynamic-lib
 
