@@ -52,14 +52,18 @@ package body Boiler.Global is
    end;
 
    function Is_Subclass (Global: Global_State_Type; Sub, Super: URI_Type_Without_Finalize'Class) return Boolean is
-      Sub2: constant URI_Type := Copy(Sub);
+      Sub2  : constant URI_Type := Copy(Sub  );
       Super2: constant URI_Type := Copy(Super);
+      Sub3, Super3: Sub_Classes_Graph.Node;
    begin
       begin
-         return Is_Ancestor(Global.URIs_Map.Element(Sub2), Global.URIs_Map.Element(Super2));
+         Sub3   := Global.URIs_Map.Element(Sub2  );
+         Super3 := Global.URIs_Map.Element(Super2);
       exception
-         when Constraint_Error => return False;
+         when Constraint_Error =>
+            return False;
       end;
+      return Is_Ancestor(Sub3, Super3);
    end;
 
 end Boiler.Global;
