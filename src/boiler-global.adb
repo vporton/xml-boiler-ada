@@ -51,6 +51,7 @@ package body Boiler.Global is
       end;
    end;
 
+   -- TODO: Add caching for speed?
    function Is_Subclass (Global: Global_State_Type; Sub, Super: URI_Type_Without_Finalize'Class) return Boolean is
       Sub2  : constant URI_Type := Copy(Sub  );
       Super2: constant URI_Type := Copy(Super);
