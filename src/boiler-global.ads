@@ -1,8 +1,10 @@
+with Ada.Finalization;
 with Boiler.Directories;
 with RDF.Redland.URI; use RDF.Redland.URI;
 private with Ada.Containers.Ordered_Maps;
 private with Generic_Directed_Graph;
 private with Generic_Address_Order;
+--  private with RDF.Redland.World;
 
 package Boiler.Global is
 
@@ -25,10 +27,13 @@ private
    package URI_To_Access is new Ada.Containers.Ordered_Maps(URI_Type, Sub_Classes_Graph.Node);
 
    -- FIXME: Should be made public?
-   type Global_State_Type is
+   type Global_State_Type is new Ada.Finalization.Limited_Controlled with
       record
          Directories_Config: Boiler.Directories.Directories_Config_Type;
+--           Initialization_Redland_World: Redland_World_Type;
          URIs_Map: URI_To_Access.Map;
       end record;
+
+   overriding procedure Initialize (Object: in out Global_State_Type);
 
 end Boiler.Global;
