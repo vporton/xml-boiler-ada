@@ -16,17 +16,19 @@ package Boiler.RDF_Recursive_Descent is
       type Base_Predicate_Parser is tagged
          record
             Predicate: URI_Type;
-            Data: access all Data_Type;
+--              Data: access all Data_Type; -- also make a version where it is a part of a larger record?
          end record;
 
       -- TODO: condition to restrict Node to only URI or Blank
-      not overriding procedure Parse (World: World_Type_Without_Finalize'Class;
+      not overriding procedure Parse (World: Redland_World_Type_Without_Finalize'Class;
                                       Parser: Base_Predicate_Parser;
                                       Model: Model_Type_Without_Finalize'Class;
-                                      Node: Node_Type_Without_Finalize'Class) is null;
+                                      Node: Node_Type_Without_Finalize'Class;
+                                      Data: access all Data_Type) is null;
 
    end Base_Predicate;
 
+   -- FIXME: We need a separate Data_Type for every element. This is not possible in Ada
    package Predicate_List is new Ada.Containers.Indefinite_Vectors(Natural, Base_Predicate_Parser'Class);
 
    type Base_Node_Parser is limited
@@ -34,10 +36,11 @@ package Boiler.RDF_Recursive_Descent is
          Predicates: Predicate_List.Vector;
       end record;
 
-   not overriding procedure Parse (World: World_Type_Without_Finalize'Class;
+   not overriding procedure Parse (World: Redland_World_Type_Without_Finalize'Class;
                                    Parser: Base_Node_Parser;
                                    Model: Model_Type_Without_Finalize'Class;
-                                   Node: Node_Type_Without_Finalize'Class);
+                                   Node: Node_Type_Without_Finalize'Class;
+                                   Data: access all Data_Type); -- FIXME
 
    generic
       type Child_Type is private;
@@ -49,10 +52,11 @@ package Boiler.RDF_Recursive_Descent is
 --              Convert_Child: access function ()
             Child: access Holders.Holder;
          end record;
-      overriding procedure Parse(World: World_Type_Without_Finalize'Class;
+      overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Zero_One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class);
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 Data: access all Data_Type);
    end Zero_One_Predicate;
 
    generic
@@ -60,15 +64,16 @@ package Boiler.RDF_Recursive_Descent is
    package Zero_Or_More_Predicate is
       package Vectors is new Ada.Containers.Indefinite_Vectors(Child_Type);
       package Holders is new Ada.Containers.Indefinite_Holders(Child_Type); -- TODO: Move to body?
-      package Parser is new Base_Predicate_Parser(Child_Type);
+      package Parser is new Base_Predicate_Parser(Vectors.Vector);
       type Zero_Or_More_Predicate_Parser is new Parser.Base_Predicate_Parser with
          record
             Child_Parser: Base_Node_Parser;
          end record;
-      overriding procedure Parse(World: World_Type_Without_Finalize'Class;
+      overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class);
-   end Zero_One_Predicate;
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 Data: access all Data_Type);
+   end Zero_Or_More_Predicate;
 
 end Boiler.RDF_Recursive_Descent;
