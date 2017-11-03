@@ -13,10 +13,12 @@ package Boiler.RDF_Recursive_Descent is
       type Data_Type is private; -- for indefinite types use indefinite holder
    package Base_Predicate is
 
+      type Data_Access is access all Data_Type;
+
       type Base_Predicate_Parser is tagged
          record
             Predicate: URI_Type;
---              Data: access all Data_Type; -- also make a version where it is a part of a larger record?
+--              Data: Data_Access; -- also make a version where it is a part of a larger record?
          end record;
 
       -- TODO: condition to restrict Node to only URI or Blank
@@ -24,48 +26,50 @@ package Boiler.RDF_Recursive_Descent is
                                       Parser: Base_Predicate_Parser;
                                       Model: Model_Type_Without_Finalize'Class;
                                       Node: Node_Type_Without_Finalize'Class;
-                                      Data: access all Data_Type) is null;
+                                      Data: Data_Access) is null;
 
    end Base_Predicate;
 
-   -- FIXME: We need a separate Data_Type for every element. This is not possible in Ada
-   package Predicate_List is new Ada.Containers.Indefinite_Vectors(Natural, Base_Predicate_Parser'Class);
-
-   type Base_Node_Parser is limited
-      record
-         Predicates: Predicate_List.Vector;
-      end record;
-
-   not overriding procedure Parse (World: Redland_World_Type_Without_Finalize'Class;
-                                   Parser: Base_Node_Parser;
-                                   Model: Model_Type_Without_Finalize'Class;
-                                   Node: Node_Type_Without_Finalize'Class;
-                                   Data: access all Data_Type); -- FIXME
-
    generic
-      type Child_Type is private;
-   package Zero_One_Predicate is
-      -- FIXME: Can we use a variant record instead?
-      package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
-      type Zero_One_Predicate_Parser is new Base_Predicate_Parser with
-         record
---              Convert_Child: access function ()
-            Child: access Holders.Holder;
-         end record;
-      overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
-                                 Parser: Zero_One_Predicate_Parser;
-                                 Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class;
-                                 Data: access all Data_Type);
-   end Zero_One_Predicate;
+      type Data_Type is private; -- for indefinite types use indefinite holder
+   package Base_Node is
+
+      type Data_Access is access all Data_Type;
+
+      type Base_Node_Parser is limited null record;
+
+      not overriding procedure Parse (World: Redland_World_Type_Without_Finalize'Class;
+                                      Parser: Base_Node_Parser;
+                                      Model: Model_Type_Without_Finalize'Class;
+                                      Node: Node_Type_Without_Finalize'Class;
+                                      Data: Data_Access) is null;
+
+   end Base_Node;
+
+   -- TODO
+--     generic
+--        type Child_Type is private;
+--     package Zero_One_Predicate is
+--        -- FIXME: Can we use a variant record instead?
+--        package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
+--        type Zero_One_Predicate_Parser is new Base_Predicate_Parser with
+--           record
+--              Child: access Holders.Holder;
+--           end record;
+--        overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
+--                                   Parser: Zero_One_Predicate_Parser;
+--                                   Model: Model_Type_Without_Finalize'Class;
+--                                   Node: Node_Type_Without_Finalize'Class;
+--                                   Data: Data_Access);
+--     end Zero_One_Predicate;
 
    generic
       type Child_Type is private;
    package Zero_Or_More_Predicate is
-      package Vectors is new Ada.Containers.Indefinite_Vectors(Child_Type);
+      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type);
       package Holders is new Ada.Containers.Indefinite_Holders(Child_Type); -- TODO: Move to body?
-      package Parser is new Base_Predicate_Parser(Vectors.Vector);
-      type Zero_Or_More_Predicate_Parser is new Parser.Base_Predicate_Parser with
+      package Predicate_Parser is new Base_Predicate(Vectors.Vector);
+      type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
             Child_Parser: Base_Node_Parser;
          end record;
@@ -73,7 +77,7 @@ package Boiler.RDF_Recursive_Descent is
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 Data: access all Data_Type);
+                                 Data: Data_Access);
    end Zero_Or_More_Predicate;
 
 end Boiler.RDF_Recursive_Descent;
