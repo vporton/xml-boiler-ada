@@ -4,6 +4,10 @@ https://en.wikiversity.org/wiki/Automatic_transformation_of_XML_namespaces
 
 This is a work in progress. It does not work yet.
 
+XML Boiler uses this library:
+
+https://github.com/vporton/redland-bindings/tree/ada2012/ada
+
 ==
 
 The following organizations were asked to support this project:
