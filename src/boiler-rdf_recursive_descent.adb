@@ -14,21 +14,23 @@ package body Boiler.RDF_Recursive_Descent is
                       Data: Predicate_Parser.Data_Access) is
          Iter: Node_Iterator_Type :=
            Get_Targets (Model, Node, From_URI(World, Parser.Predicate));
+         use type Predicate_Parser.Data_Access;
+         use Vectors, Node_Parser;
       begin
          if Data /= null then
-            Clear(Vector);
+            Clear(Data.all);
          end if;
          while not Is_End(Iter) loop
             declare
                Elt: aliased Child_Type;
             begin
                Parse(World,
-                     Parser.Child_Parser,
+                     Parser.Child_Parser.all,
                      Model,
                      Get_Node(Iter),
-                     (if Data /= null then Elt'Access else null));
+                     (if Data /= null then Elt'Unchecked_Access else null));
                if Data /= null then
-                  Append(Data.all, Elt);
+                  Append(Data.all, Elt); -- TODO: Add "converter" to change element type (for example from indefinite holder)
                end if;
             exception
                when Parse_Error =>

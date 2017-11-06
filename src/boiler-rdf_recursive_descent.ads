@@ -36,7 +36,7 @@ package Boiler.RDF_Recursive_Descent is
 
       type Data_Access is access all Data_Type;
 
-      type Base_Node_Parser is limited null record;
+      type Base_Node_Parser is tagged limited null record;
 
       not overriding procedure Parse (World: Redland_World_Type_Without_Finalize'Class;
                                       Parser: Base_Node_Parser;
@@ -69,15 +69,16 @@ package Boiler.RDF_Recursive_Descent is
       package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type);
       package Holders is new Ada.Containers.Indefinite_Holders(Child_Type); -- TODO: Move to body?
       package Predicate_Parser is new Base_Predicate(Vectors.Vector);
+      package Node_Parser is new Base_Node(Child_Type);
       type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Child_Parser: Base_Node_Parser;
+            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
       overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 Data: Data_Access);
+                                 Data: Predicate_Parser.Data_Access);
    end Zero_Or_More_Predicate;
 
 end Boiler.RDF_Recursive_Descent;
