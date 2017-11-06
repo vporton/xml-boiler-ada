@@ -63,11 +63,11 @@ package Boiler.RDF_Recursive_Descent is
 --     end Zero_One_Predicate;
 
    generic
-      type Child_Type is private;
+      type Child_Type (<>) is private;
       type Temporary_Child_Type is private;
       with function Child_Converter (From: Temporary_Child_Type) return Child_Type;
    package Zero_Or_More_Predicate is
-      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type); -- TODO: Remove Indefinite_
+      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type); -- It could work faster without "Indefinite"
       package Predicate_Parser is new Base_Predicate(Vectors.Vector);
       package Node_Parser is new Base_Node(Temporary_Child_Type);
       type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
