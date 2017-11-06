@@ -1,4 +1,3 @@
-with Ada.Containers.Indefinite_Holders;
 with Ada.Containers.Indefinite_Vectors;
 with RDF.Redland.World; use RDF.Redland.World;
 with RDF.Redland.URI; use RDF.Redland.URI;
@@ -65,11 +64,12 @@ package Boiler.RDF_Recursive_Descent is
 
    generic
       type Child_Type is private;
+      type Temporary_Child_Type is private;
+      with function Child_Converter (From: Temporary_Child_Type) return Child_Type;
    package Zero_Or_More_Predicate is
-      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type);
-      package Holders is new Ada.Containers.Indefinite_Holders(Child_Type); -- TODO: Move to body?
+      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type); -- TODO: Remove Indefinite_
       package Predicate_Parser is new Base_Predicate(Vectors.Vector);
-      package Node_Parser is new Base_Node(Child_Type);
+      package Node_Parser is new Base_Node(Temporary_Child_Type);
       type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
@@ -80,5 +80,13 @@ package Boiler.RDF_Recursive_Descent is
                                  Node: Node_Type_Without_Finalize'Class;
                                  Data: Predicate_Parser.Data_Access);
    end Zero_Or_More_Predicate;
+
+   generic
+      type Child_Type is private;
+   package Simple_Zero_Or_More_Predicate is
+      function Identity (From: Child_Type) return Child_Type is (From);
+      package Parent is new Zero_Or_More_Predicate(Child_Type, Child_Type, Identity);
+      type Zero_Or_More_Predicate_Parser is new Parent.Zero_Or_More_Predicate_Parser with null record;
+   end Simple_Zero_Or_More_Predicate;
 
 end Boiler.RDF_Recursive_Descent;

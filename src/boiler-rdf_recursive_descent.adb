@@ -22,7 +22,7 @@ package body Boiler.RDF_Recursive_Descent is
          end if;
          while not Is_End(Iter) loop
             declare
-               Elt: aliased Child_Type;
+               Elt: aliased Temporary_Child_Type;
             begin
                Parse(World,
                      Parser.Child_Parser.all,
@@ -30,7 +30,7 @@ package body Boiler.RDF_Recursive_Descent is
                      Get_Node(Iter),
                      (if Data /= null then Elt'Unchecked_Access else null));
                if Data /= null then
-                  Append(Data.all, Elt); -- TODO: Add "converter" to change element type (for example from indefinite holder)
+                  Append(Data.all, Child_Converter(Elt)); -- TODO: Add "converter" to change element type (for example from indefinite holder)
                end if;
             exception
                when Parse_Error =>
