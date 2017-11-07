@@ -1,3 +1,4 @@
+with Ada.Containers.Indefinite_Holders;
 with Ada.Containers.Indefinite_Vectors;
 with RDF.Redland.World; use RDF.Redland.World;
 with RDF.Redland.URI; use RDF.Redland.URI;
@@ -45,14 +46,12 @@ package Boiler.RDF_Recursive_Descent is
 
    end Base_Node;
 
-   -- TODO
    generic
       type Child_Type is private;
       type Holder_Type is private;
       with function To_Holder (From: Child_Type) return Holder_Type;
       Default_Value: Holder_Type;
    package Zero_One_Predicate is
---        package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
       package Node_Parser is new Base_Node(Child_Type);
       package Predicate_Parser is new Base_Predicate(Holder_Type);
       type Zero_One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
@@ -65,6 +64,17 @@ package Boiler.RDF_Recursive_Descent is
                                  Node: Node_Type_Without_Finalize'Class;
                                  Data: Predicate_Parser.Data_Access);
    end Zero_One_Predicate;
+
+   generic
+      type Child_Type is private;
+   package Simple_Zero_One_Predicate is
+      package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
+      package Parent is new Zero_One_Predicate(Child_Type,
+                                               Holders.Holder,
+                                               Holders.To_Holder,
+                                               Holders.Empty_Holder);
+      type Zero_One_Predicate_Parser is new Parent.Zero_One_Predicate_Parser with null record;
+   end Simple_Zero_One_Predicate;
 
    generic
       type Child_Type (<>) is private;
