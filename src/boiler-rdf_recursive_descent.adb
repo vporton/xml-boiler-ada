@@ -62,4 +62,26 @@ package body Boiler.RDF_Recursive_Descent is
 
    end Zero_Or_More_Predicate;
 
+   package body Choice is
+
+      function Parse(World: Redland_World_Type_Without_Finalize'Class;
+                     Parser: Choice_Parser;
+                     Model: Model_Type_Without_Finalize'Class;
+                     Node: Node_Type_Without_Finalize'Class)
+                     return Base_Type is
+         use Predicate_Parser;
+      begin
+         for C of Parser.Choices.all loop
+            begin
+               return Parse(World, C.all, Model, Node);
+            exception
+               when Parse_Error =>
+                  null; -- do next loop iteration
+            end;
+         end loop;
+         raise Parse_Error; -- no variant found
+      end;
+
+   end Choice;
+
 end Boiler.RDF_Recursive_Descent;

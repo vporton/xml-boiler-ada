@@ -100,4 +100,20 @@ package Boiler.RDF_Recursive_Descent is
       type Zero_Or_More_Predicate_Parser is new Parent.Zero_Or_More_Predicate_Parser with null record;
    end Simple_Zero_Or_More_Predicate;
 
+   generic
+      type Base_Type (<>) is private;
+   package Choice is
+      package Predicate_Parser is new Base_Predicate(Base_Type);
+      type Choices_Array is array(Natural range <>) of access Predicate_Parser.Base_Predicate_Parser'Class;
+      type Choice_Parser is new Predicate_Parser.Base_Predicate_Parser with
+         record
+            Choices: access Choices_Array;
+         end record;
+      overriding function Parse(World: Redland_World_Type_Without_Finalize'Class;
+                                Parser: Choice_Parser;
+                                Model: Model_Type_Without_Finalize'Class;
+                                Node: Node_Type_Without_Finalize'Class)
+                                return Base_Type;
+   end Choice;
+
 end Boiler.RDF_Recursive_Descent;
