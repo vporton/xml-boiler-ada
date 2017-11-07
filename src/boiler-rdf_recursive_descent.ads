@@ -46,21 +46,25 @@ package Boiler.RDF_Recursive_Descent is
    end Base_Node;
 
    -- TODO
---     generic
---        type Child_Type is private;
---     package Zero_One_Predicate is
---        -- FIXME: Can we use a variant record instead?
+   generic
+      type Child_Type is private;
+      type Holder_Type is private;
+      with function To_Holder (From: Child_Type) return Holder_Type;
+      Default_Value: Holder_Type;
+   package Zero_One_Predicate is
 --        package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
---        type Zero_One_Predicate_Parser is new Base_Predicate_Parser with
---           record
---              Child: access Holders.Holder;
---           end record;
---        overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
---                                   Parser: Zero_One_Predicate_Parser;
---                                   Model: Model_Type_Without_Finalize'Class;
---                                   Node: Node_Type_Without_Finalize'Class;
---                                   Data: Data_Access);
---     end Zero_One_Predicate;
+      package Node_Parser is new Base_Node(Child_Type);
+      package Predicate_Parser is new Base_Predicate(Holder_Type);
+      type Zero_One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
+         record
+            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
+         end record;
+      overriding procedure Parse(World: Redland_World_Type_Without_Finalize'Class;
+                                 Parser: Zero_One_Predicate_Parser;
+                                 Model: Model_Type_Without_Finalize'Class;
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 Data: Predicate_Parser.Data_Access);
+   end Zero_One_Predicate;
 
    generic
       type Child_Type (<>) is private;
