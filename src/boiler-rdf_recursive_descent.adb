@@ -113,10 +113,11 @@ package body Boiler.RDF_Recursive_Descent is
                       Parser: Class_Forest_Parser;
                       Model: Model_Type_Without_Finalize'Class)
                       return Vectors.Vector is
-         Pattern: constant Statement_Type := From_Nodes(World,
-                                               Node_Type_Without_Finalize'(From_Handle(null)),
-                                               From_URI_String(World, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                                               Node_Type_Without_Finalize'(From_Handle(null)));
+         Pattern: constant Statement_Type :=
+           From_Nodes(World,
+                      Node_Type_Without_Finalize'(From_Handle(null)),
+                      From_URI_String(World, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                      Node_Type_Without_Finalize'(From_Handle(null)));
          Stream: constant Stream_Type := Find(Model, Pattern);
       begin
          return V: Vectors.Vector do
