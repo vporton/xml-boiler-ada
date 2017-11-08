@@ -45,6 +45,22 @@ package Boiler.RDF_Recursive_Descent is
 
    generic
       type Child_Type (<>) is private;
+   package One_Predicate is
+      package Node_Parser is new Base_Node(Child_Type);
+      package Predicate_Parser is new Base_Predicate(Child_Type);
+      type One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
+         record
+            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
+         end record;
+      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                                 Parser: One_Predicate_Parser;
+                                 Model: Model_Type_Without_Finalize'Class;
+                                 Node: Node_Type_Without_Finalize'Class)
+                                 return Child_Type;
+   end One_Predicate;
+
+   generic
+      type Child_Type (<>) is private;
       type Holder_Type (<>) is private;
       with function To_Holder (From: Child_Type) return Holder_Type;
       Default_Value: Holder_Type;

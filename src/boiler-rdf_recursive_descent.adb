@@ -4,6 +4,31 @@ with RDF.Redland.Stream; use RDF.Redland.Stream;
 
 package body Boiler.RDF_Recursive_Descent is
 
+   package body One_Predicate is
+
+      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                      Parser: One_Predicate_Parser;
+                      Model: Model_Type_Without_Finalize'Class;
+                      Node: Node_Type_Without_Finalize'Class)
+                      return Child_Type is
+         Iterator: Node_Iterator_Type :=
+           Get_Targets(Model, Node, From_URI(World, Parser.Predicate));
+         Child_Nodes: constant Node_Array := To_Array(Iterator);
+         use Predicate_Parser;
+      begin
+         if Child_Nodes'Length /= 1 then
+            raise Parse_Error;
+         end if;
+         declare
+            Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
+            use Node_Parser;
+         begin
+            return Parse(World, Parser.Child_Parser.all, Model, Child_Node);
+         end;
+      end;
+
+   end One_Predicate;
+
    package body Zero_One_Predicate is
 
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
