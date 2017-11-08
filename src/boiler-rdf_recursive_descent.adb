@@ -96,9 +96,9 @@ package body Boiler.RDF_Recursive_Descent is
    begin
       while not Is_End(Iterator) loop
          declare
-            Node: Node_Type_Without_Finalize renames Get_Node(Iterator);
+            Target: Node_Type_Without_Finalize renames Get_Node(Iterator);
          begin
-            if Is_Resource(Node) and then Is_Subclass(Get_URI(Node), Class) then
+            if Is_Resource(Target) and then Is_Subclass(Get_URI(Target), Class) then
                return;
             end if;
          end;
