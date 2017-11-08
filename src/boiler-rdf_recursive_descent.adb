@@ -120,7 +120,7 @@ package body Boiler.RDF_Recursive_Descent is
          Stream: constant Stream_Type := Find(Model, Pattern);
       begin
          return V: Vectors.Vector do
-            while not Is_End(Stream) loop
+            while not Is_End(Stream) loop -- slow algorithm
                declare
                   -- TODO: Unfortunate clash of two Get_Object functions. Change RDF.Redland?
                   Statement: constant Statement_Type_Without_Finalize := Get_Object(Stream);
