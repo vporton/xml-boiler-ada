@@ -12,7 +12,7 @@ package body Boiler.RDF_Format is
          return Boiler.Global.Is_Subclass (Global, Sub, Super);
       end;
    begin
-      Check_Node_Class (Is_Subclass'Access, World, Model, Node, Class);
+      Check_Node_Class(Is_Subclass'Access, World, Model, Node, Class);
    end;
 
 end Boiler.RDF_Format;
