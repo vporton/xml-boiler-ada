@@ -124,4 +124,21 @@ package Boiler.RDF_Recursive_Descent is
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class);
 
+   generic
+      type Base_Type (<>) is private;
+   package Class_Forest is
+      package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Base_Type); -- It could work faster without "Indefinite"
+      package Node_Parser is new Base_Node(Base_Type);
+      type Class_Forest_Parser is tagged
+         record
+            Parser: access Node_Parser.Base_Node_Parser'Class;
+            Class: URI_Type;
+            Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
+         end record;
+      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                      Parser: Class_Forest_Parser;
+                      Model: Model_Type_Without_Finalize'Class)
+                      return Vectors.Vector;
+   end Class_Forest;
+
 end Boiler.RDF_Recursive_Descent;
