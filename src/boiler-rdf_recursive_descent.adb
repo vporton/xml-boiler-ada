@@ -20,7 +20,7 @@ package body Boiler.RDF_Recursive_Descent is
             return Default_Value;
          end if;
          declare
-            Child_Node: Node_Type renames Child_Nodes(Child_Nodes'First);
+            Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
             return To_Holder(Parse(World,
@@ -96,7 +96,7 @@ package body Boiler.RDF_Recursive_Descent is
    begin
       while not Is_End(Iterator) loop
          declare
-            Target: Node_Type_Without_Finalize renames Get_Node(Iterator);
+            Target: constant Node_Type_Without_Finalize := Get_Node(Iterator);
          begin
             if Is_Resource(Target) and then Is_Subclass(Get_URI(Target), Class) then
                return;
