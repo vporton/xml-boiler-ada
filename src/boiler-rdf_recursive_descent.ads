@@ -55,11 +55,11 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse(World: Redland_World_Type_Without_Finalize'Class;
-                                Parser: Zero_One_Predicate_Parser;
-                                Model: Model_Type_Without_Finalize'Class;
-                                Node: Node_Type_Without_Finalize'Class)
-                                return Holder_Type;
+      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                                 Parser: Zero_One_Predicate_Parser;
+                                 Model: Model_Type_Without_Finalize'Class;
+                                 Node: Node_Type_Without_Finalize'Class)
+                                 return Holder_Type;
    end Zero_One_Predicate;
 
    generic
@@ -85,11 +85,11 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse(World: Redland_World_Type_Without_Finalize'Class;
-                                Parser: Zero_Or_More_Predicate_Parser;
-                                Model: Model_Type_Without_Finalize'Class;
-                                Node: Node_Type_Without_Finalize'Class)
-                                return Vectors.Vector;
+      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                                 Parser: Zero_Or_More_Predicate_Parser;
+                                 Model: Model_Type_Without_Finalize'Class;
+                                 Node: Node_Type_Without_Finalize'Class)
+                                 return Vectors.Vector;
    end Zero_Or_More_Predicate;
 
    generic
@@ -109,11 +109,19 @@ package Boiler.RDF_Recursive_Descent is
          record
             Choices: access Choices_Array;
          end record;
-      overriding function Parse(World: Redland_World_Type_Without_Finalize'Class;
-                                Parser: Choice_Parser;
-                                Model: Model_Type_Without_Finalize'Class;
-                                Node: Node_Type_Without_Finalize'Class)
-                                return Base_Type;
+      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                                 Parser: Choice_Parser;
+                                 Model: Model_Type_Without_Finalize'Class;
+                                 Node: Node_Type_Without_Finalize'Class)
+                                 return Base_Type;
    end Choice;
+
+   -- No need to make this conforming to parser API
+   -- Raises the exception if not match
+   procedure Check_Node_Class (Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
+                               World: Redland_World_Type_Without_Finalize'Class;
+                               Model: Model_Type_Without_Finalize'Class;
+                               Node: Node_Type_Without_Finalize'Class;
+                               Class: URI_Type_Without_Finalize'Class);
 
 end Boiler.RDF_Recursive_Descent;
