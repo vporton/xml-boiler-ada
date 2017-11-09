@@ -7,6 +7,9 @@ with RDF.Redland.Model; use RDF.Redland.Model;
 
 package Boiler.RDF_Recursive_Descent is
 
+   -- WARNING: Don't use this parser to parse recursive data structures,
+   -- because it may lead to infinite recursion on circular RDF.
+
    Parse_Error: exception;
 
    generic
