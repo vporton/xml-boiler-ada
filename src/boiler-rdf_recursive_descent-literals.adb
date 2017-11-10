@@ -21,6 +21,8 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#integer" then
          raise Parse_Error;
       end if;
+      declare
+         pragma Unsuppress(Range_Check);
       begin
          return Integer'Value(As_String(Node));
       exception
