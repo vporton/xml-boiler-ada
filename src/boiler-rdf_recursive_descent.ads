@@ -143,6 +143,7 @@ package Boiler.RDF_Recursive_Descent is
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class);
 
+   -- Finds trees having root of a given class (or subclasses)
    generic
       type Base_Type (<>) is private;
    package Class_Forest is
