@@ -31,4 +31,27 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
+   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                   Parser: Float_Literal_Parser;
+                   Model: Model_Type_Without_Finalize'Class;
+                   Node: Node_Type_Without_Finalize'Class)
+                   return Long_Float is
+   begin
+      if not Is_Literal(Node) then
+         raise Parse_Error;
+      end if;
+      declare
+         Datatype: constant String := As_String(Get_Datatype_URI(Node));
+      begin
+         if Datatype = "http://www.w3.org/2001/XMLSchema#integer" or else
+           Datatype = "http://www.w3.org/2001/XMLSchema#float" or else
+           Datatype = "http://www.w3.org/2001/XMLSchema#double" or else
+           Datatype = "http://www.w3.org/2001/XMLSchema#decimal"
+         then
+            return Long_Float'Value(As_String(Node));
+         end if;
+         raise Parse_Error;
+      end;
+   end;
+
 end Boiler.RDF_Recursive_Descent.Literals;
