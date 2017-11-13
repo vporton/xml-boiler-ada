@@ -30,4 +30,14 @@ package Boiler.RDF_Recursive_Descent.Literals is
                               Node: Node_Type_Without_Finalize'Class)
                               return Long_Float;
 
+   package Boolean_Node is new Base_Node(Boolean);
+
+   type Boolean_Literal_Parser is new Boolean_Node.Base_Node_Parser with null record;
+
+   overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                              Parser: Boolean_Literal_Parser;
+                              Model: Model_Type_Without_Finalize'Class;
+                              Node: Node_Type_Without_Finalize'Class)
+                              return Boolean;
+
 end Boiler.RDF_Recursive_Descent.Literals;

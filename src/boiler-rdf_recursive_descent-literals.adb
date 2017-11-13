@@ -54,4 +54,26 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
+   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+                   Parser: Boolean_Literal_Parser;
+                   Model: Model_Type_Without_Finalize'Class;
+                   Node: Node_Type_Without_Finalize'Class)
+                   return Boolean is
+   begin
+      if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#boolean" then
+         raise Parse_Error;
+      end if;
+      declare
+         Str: constant String := As_String(Node);
+      begin
+         if Str = "true" or Str = "1" then
+            return True;
+         end if;
+         if Str = "false" or Str = "0" then
+            return True;
+         end if;
+      end;
+      raise Parse_Error;
+   end;
+
 end Boiler.RDF_Recursive_Descent.Literals;
