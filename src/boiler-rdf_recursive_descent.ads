@@ -13,7 +13,17 @@ package Boiler.RDF_Recursive_Descent is
    -- TODO: Logger and booelan mode whether produce a warning on a subconstuct
    -- TODO: Another option to make an error fatal
 
-   Parse_Error: exception;
+   Parse_Error, Fatal_Parse_Error: exception;
+
+   type Error_Enum is (Ignore, Warning, Fatal);
+
+   type Log_Level_Enum is (Warning, Fatal);
+
+   type Logger_Type is tagged private;
+
+   procedure Log (Logger: Logger_Type; Message: String; Log_Level: Log_Level_Enum) is null;
+
+   procedure Raise_Warning (On_Error: Error_Enum; Logger: Logger_Type'Class; Message: String);
 
    generic
       type Data_Type (<>) is private;
@@ -28,7 +38,9 @@ package Boiler.RDF_Recursive_Descent is
       not overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                      Parser: Base_Predicate_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
-                                     Node: Node_Type_Without_Finalize'Class)
+                                     Node: Node_Type_Without_Finalize'Class;
+                                     On_Error: Error_Enum;
+                                     Logger: Logger_Type'Class)
                                      return Data_Type
                                      is abstract;
 
@@ -43,7 +55,9 @@ package Boiler.RDF_Recursive_Descent is
       not overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                      Parser: Base_Node_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
-                                     Node: Node_Type_Without_Finalize'Class)
+                                     Node: Node_Type_Without_Finalize'Class;
+                                     On_Error: Error_Enum;
+                                     Logger: Logger_Type'Class)
                                      return Data_Type
                                      is abstract;
 
@@ -61,7 +75,9 @@ package Boiler.RDF_Recursive_Descent is
       overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class)
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 On_Error: Error_Enum;
+                                 Logger: Logger_Type'Class)
                                  return Child_Type;
    end One_Predicate;
 
@@ -80,7 +96,9 @@ package Boiler.RDF_Recursive_Descent is
       overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Zero_One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class)
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 On_Error: Error_Enum;
+                                 Logger: Logger_Type'Class)
                                  return Holder_Type;
    end Zero_One_Predicate;
 
@@ -110,7 +128,9 @@ package Boiler.RDF_Recursive_Descent is
       overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class)
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 On_Error: Error_Enum;
+                                 Logger: Logger_Type'Class)
                                  return Vectors.Vector;
    end Zero_Or_More_Predicate;
 
@@ -134,7 +154,9 @@ package Boiler.RDF_Recursive_Descent is
       overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                  Parser: Choice_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class)
+                                 Node: Node_Type_Without_Finalize'Class;
+                                 On_Error: Error_Enum;
+                                 Logger: Logger_Type'Class)
                                  return Base_Type;
    end Choice;
 
@@ -160,8 +182,14 @@ package Boiler.RDF_Recursive_Descent is
          end record;
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Class_Forest_Parser;
-                      Model: Model_Type_Without_Finalize'Class)
+                      Model: Model_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Vectors.Vector;
    end Class_Forest;
+
+private
+
+   type Logger_Type is tagged null record;
 
 end Boiler.RDF_Recursive_Descent;

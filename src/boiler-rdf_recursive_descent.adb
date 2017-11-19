@@ -4,12 +4,29 @@ with RDF.Redland.Stream; use RDF.Redland.Stream;
 
 package body Boiler.RDF_Recursive_Descent is
 
+   -- FIXME: Use this procedure below and in Boiler.RDF_Recursive_Descent.Literals
+   procedure Raise_Warning (On_Error: Error_Enum; Logger: Logger_Type'Class; Message: String) is
+   begin
+      case On_Error is
+         when Ignore =>
+            raise Parse_Error with Message;
+         when Warning =>
+            Log(Logger, Message, Warning);
+            raise Parse_Error with Message;
+         when Fatal =>
+            Log(Logger, Message, Fatal);
+            raise Fatal_Parse_Error with Message;
+      end case;
+   end;
+
    package body One_Predicate is
 
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class)
+                      Node: Node_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Child_Type is
          Iterator: Node_Iterator_Type :=
            Get_Targets(Model, Node, From_URI(World, Parser.Predicate));
@@ -23,7 +40,7 @@ package body Boiler.RDF_Recursive_Descent is
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
-            return Parse(World, Parser.Child_Parser.all, Model, Child_Node);
+            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, On_Error, Logger); -- FIXME
          end;
       end;
 
@@ -34,7 +51,9 @@ package body Boiler.RDF_Recursive_Descent is
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Zero_One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class)
+                      Node: Node_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Holder_Type is
          Iterator: Node_Iterator_Type :=
            Get_Targets(Model, Node, From_URI(World, Parser.Predicate));
@@ -51,7 +70,9 @@ package body Boiler.RDF_Recursive_Descent is
             return To_Holder(Parse(World,
                              Parser.Child_Parser.all,
                              Model,
-                             Child_Node));
+                             Child_Node,
+                             On_Error, -- FIXME
+                             Logger));
          exception
             when Parse_Error =>
                return Default_Value;
@@ -65,7 +86,9 @@ package body Boiler.RDF_Recursive_Descent is
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Zero_Or_More_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class)
+                      Node: Node_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Vectors.Vector is
          Iter: Node_Iterator_Type :=
            Get_Targets (Model, Node, From_URI(World, Parser.Predicate));
@@ -77,7 +100,9 @@ package body Boiler.RDF_Recursive_Descent is
                   Append(Result, Child_Converter(Parse(World,
                          Parser.Child_Parser.all,
                          Model,
-                         Get_Node(Iter))));
+                         Get_Node(Iter),
+                         On_Error, -- FIXME
+                         Logger)));
                exception
                   when Parse_Error =>
                      null; -- ignore non-parsed childs
@@ -94,13 +119,15 @@ package body Boiler.RDF_Recursive_Descent is
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Choice_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class)
+                      Node: Node_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Base_Type is
          use Predicate_Parser;
       begin
          for C of Parser.Choices.all loop
             begin
-               return Parse(World, C.all, Model, Node);
+               return Parse(World, C.all, Model, Node, On_Error, Logger); -- FIXME
             exception
                when Parse_Error =>
                   null; -- do next loop iteration
@@ -136,7 +163,9 @@ package body Boiler.RDF_Recursive_Descent is
 
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Class_Forest_Parser;
-                      Model: Model_Type_Without_Finalize'Class)
+                      Model: Model_Type_Without_Finalize'Class;
+                      On_Error: Error_Enum;
+                      Logger: Logger_Type'Class)
                       return Vectors.Vector is
          Pattern: constant Statement_Type :=
            From_Nodes(World,
@@ -159,7 +188,7 @@ package body Boiler.RDF_Recursive_Descent is
                         use Node_Parser;
                      begin
                         Check_Node_Class(Parser.Is_Subclass, World, Model, Node, Class);
-                        V.Append(Parse(World, Parser.Parser.all, Model, Node));
+                        V.Append(Parse(World, Parser.Parser.all, Model, Node, On_Error, Logger)); -- FIXME
                      exception
                         when Parse_Error =>
                            null;
