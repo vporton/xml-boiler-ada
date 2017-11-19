@@ -10,6 +10,8 @@ package Boiler.RDF_Recursive_Descent is
    -- WARNING: Don't use this parser to parse recursive data structures,
    -- because it may lead to infinite recursion on circular RDF.
 
+   -- TODO: Logger and booelan mode whether produce a warning on a subconstuct
+
    Parse_Error: exception;
 
    generic
