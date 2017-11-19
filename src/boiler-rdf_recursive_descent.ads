@@ -11,6 +11,7 @@ package Boiler.RDF_Recursive_Descent is
    -- because it may lead to infinite recursion on circular RDF.
 
    -- TODO: Logger and booelan mode whether produce a warning on a subconstuct
+   -- TODO: Another option to make an error fatal
 
    Parse_Error: exception;
 
