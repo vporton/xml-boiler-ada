@@ -14,7 +14,7 @@ library project Libxmlboiler is
    for Library_Dir use "lib";
    for Library_Kind use Library_Kind;
    for Library_Version use external ("soversion", "default");
-   for Source_Dirs use ("src");
+   for Source_Dirs use ("src", "src/bindings");
    case LIBRARY_KIND is
       when "dynamic" =>
           for Object_Dir use "obj-dynamic";
