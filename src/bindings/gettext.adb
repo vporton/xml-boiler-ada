@@ -24,4 +24,11 @@ package body Gettext is
       return Value (Internal (To_C(Msg)));
    end Gettext;
 
+   function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String is
+      Tmp_Locale: Glibc.Locale.Local_Locale(Locale);
+      pragma Unreferenced(Tmp_Locale);
+   begin
+      return Gettext(Msg);
+   end;
+
 end Gettext;
