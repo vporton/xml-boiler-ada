@@ -39,7 +39,7 @@ package body Boiler.RDF_Recursive_Descent is
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
-            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, Logger); -- FIXME
+            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, Logger);
          end;
       end;
 
@@ -181,7 +181,7 @@ package body Boiler.RDF_Recursive_Descent is
                         use Node_Parser;
                      begin
                         Check_Node_Class(Parser.Is_Subclass, World, Model, Node, Class);
-                        V.Append(Parse(World, Parser.Parser.all, Model, Node, Logger)); -- FIXME
+                        V.Append(Parse(World, Parser.Parser.all, Model, Node, Logger));
                      exception
                         when Parse_Error =>
                            null;
