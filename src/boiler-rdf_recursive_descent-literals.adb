@@ -1,10 +1,9 @@
 package body Boiler.RDF_Recursive_Descent.Literals is
 
-   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+   function Parse (Context: Parser_Context_Type;
                    Parser: String_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
-                   Node: Node_Type_Without_Finalize'Class;
-                   Logger: Logger_Type'Class)
+                   Node: Node_Type_Without_Finalize'Class)
                    return String is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#string" then
@@ -13,11 +12,10 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       return As_String(Node);
    end;
 
-   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+   function Parse (Context: Parser_Context_Type;
                    Parser: Integer_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
-                   Node: Node_Type_Without_Finalize'Class;
-                   Logger: Logger_Type'Class)
+                   Node: Node_Type_Without_Finalize'Class)
                    return Integer is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#integer" then
@@ -33,11 +31,10 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
-   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+   function Parse (Context: Parser_Context_Type;
                    Parser: Float_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
-                   Node: Node_Type_Without_Finalize'Class;
-                   Logger: Logger_Type'Class)
+                   Node: Node_Type_Without_Finalize'Class)
                    return Long_Float is
    begin
       if not Is_Literal(Node) then
@@ -57,11 +54,10 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
-   function Parse (World: Redland_World_Type_Without_Finalize'Class;
+   function Parse (Context: Parser_Context_Type;
                    Parser: Boolean_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
-                   Node: Node_Type_Without_Finalize'Class;
-                   Logger: Logger_Type'Class)
+                   Node: Node_Type_Without_Finalize'Class)
                    return Boolean is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#boolean" then

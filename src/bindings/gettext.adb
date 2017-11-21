@@ -24,12 +24,13 @@ package body Gettext is
       return Value (Internal (To_C(Msg)));
    end Gettext;
 
-   function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String is
-      Tmp_Locale: Glibc.Locale.Local_Locale(Locale);
-      pragma Unreferenced(Tmp_Locale);
-   begin
-      -- FIXME: "Bind_Text_Domain; Text_Domain;" here
-      return Gettext(Msg);
-   end;
+--     function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String is
+--        Tmp_Locale: Glibc.Locale.Local_Locale(Locale);
+--        pragma Unreferenced(Tmp_Locale);
+--     begin
+--        Bind_Text_Domain;
+--        Text_Domain;
+--        return Gettext(Msg);
+--     end;
 
 end Gettext;

@@ -1,5 +1,3 @@
-with Glibc.Locale;
-
 package Gettext is
 
    procedure Text_Domain (Domain : String := "");
@@ -8,6 +6,6 @@ package Gettext is
 
    function Gettext (Msg : String) return String;
 
-   function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String;
+--     function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String;
 
 end Gettext;

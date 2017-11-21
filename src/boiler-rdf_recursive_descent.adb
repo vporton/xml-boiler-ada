@@ -21,14 +21,13 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body One_Predicate is
 
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Node: Node_Type_Without_Finalize'Class)
                       return Child_Type is
          Iterator: Node_Iterator_Type :=
-           Get_Targets(Model, Node, From_URI(World, Parser.Predicate));
+           Get_Targets(Model, Node, From_URI(Context.World.all, Parser.Predicate));
          Child_Nodes: constant Node_Array := To_Array(Iterator);
          use Predicate_Parser;
       begin
@@ -39,7 +38,7 @@ package body Boiler.RDF_Recursive_Descent is
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
-            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, Logger);
+            return Parse(Context, Parser.Child_Parser.all, Model, Child_Node);
          end;
       end;
 
@@ -47,14 +46,13 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Zero_One_Predicate is
 
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: Zero_One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Node: Node_Type_Without_Finalize'Class)
                       return Holder_Type is
          Iterator: Node_Iterator_Type :=
-           Get_Targets(Model, Node, From_URI(World, Parser.Predicate));
+           Get_Targets(Model, Node, From_URI(Context.World.all, Parser.Predicate));
          Child_Nodes: constant Node_Array := To_Array(Iterator);
          use Predicate_Parser;
       begin
@@ -65,11 +63,10 @@ package body Boiler.RDF_Recursive_Descent is
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
-            return To_Holder(Parse(World,
+            return To_Holder(Parse(Context,
                              Parser.Child_Parser.all,
                              Model,
-                             Child_Node,
-                             Logger));
+                             Child_Node));
          exception
             when Parse_Error =>
                return Default_Value;
@@ -80,24 +77,22 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Zero_Or_More_Predicate is
 
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: Zero_Or_More_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Node: Node_Type_Without_Finalize'Class)
                       return Vectors.Vector is
          Iter: Node_Iterator_Type :=
-           Get_Targets (Model, Node, From_URI(World, Parser.Predicate));
+           Get_Targets (Model, Node, From_URI(Context.World.all, Parser.Predicate));
          use Vectors, Node_Parser;
       begin
          return Result: Vectors.Vector do
             while not Is_End(Iter) loop
                begin
-                  Append(Result, Child_Converter(Parse(World,
+                  Append(Result, Child_Converter(Parse(Context,
                          Parser.Child_Parser.all,
                          Model,
-                         Get_Node(Iter),
-                         Logger)));
+                         Get_Node(Iter))));
                exception
                   when Parse_Error =>
                      null; -- ignore non-parsed childs
@@ -111,17 +106,16 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Choice is
 
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: Choice_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      Node: Node_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Node: Node_Type_Without_Finalize'Class)
                       return Base_Type is
          use Predicate_Parser;
       begin
          for C of Parser.Choices.all loop
             begin
-               return Parse(World, C.all, Model, Node, Logger);
+               return Parse(Context, C.all, Model, Node);
             exception
                when Parse_Error =>
                   null; -- do next loop iteration
@@ -133,12 +127,12 @@ package body Boiler.RDF_Recursive_Descent is
    end Choice;
 
    procedure Check_Node_Class (Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
-                               World: Redland_World_Type_Without_Finalize'Class;
+                               Context: Parser_Context_Type;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class) is
       Iterator: Node_Iterator_Type :=
-        Get_Targets(Model, Node, From_URI_String(World, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+        Get_Targets(Model, Node, From_URI_String(Context.World.all, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
    begin
       while not Is_End(Iterator) loop
          declare
@@ -155,15 +149,14 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Class_Forest is
 
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: Class_Forest_Parser;
-                      Model: Model_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Model: Model_Type_Without_Finalize'Class)
                       return Vectors.Vector is
          Pattern: constant Statement_Type :=
-           From_Nodes(World,
+           From_Nodes(Context.World.all,
                       Node_Type_Without_Finalize'(From_Handle(null)),
-                      From_URI_String(World, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                      From_URI_String(Context.World.all, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
                       Node_Type_Without_Finalize'(From_Handle(null)));
          Stream: constant Stream_Type := Find(Model, Pattern);
       begin
@@ -180,8 +173,8 @@ package body Boiler.RDF_Recursive_Descent is
                         Class: constant URI_Type_Without_Finalize := Get_URI(Class_Node);
                         use Node_Parser;
                      begin
-                        Check_Node_Class(Parser.Is_Subclass, World, Model, Node, Class);
-                        V.Append(Parse(World, Parser.Parser.all, Model, Node, Logger));
+                        Check_Node_Class(Parser.Is_Subclass, Context, Model, Node, Class);
+                        V.Append(Parse(Context, Parser.Parser.all, Model, Node));
                      exception
                         when Parse_Error =>
                            null;

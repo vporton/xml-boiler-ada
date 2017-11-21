@@ -23,6 +23,12 @@ package Boiler.RDF_Recursive_Descent is
 
    procedure Log (Logger: Logger_Type; Message: String; Log_Level: Log_Level_Enum) is null;
 
+   type Parser_Context_Type is
+      record
+         World : access Redland_World_Type_Without_Finalize'Class;
+         Logger: access Logger_Type'Class;
+      end record;
+
    procedure Raise_Warning (On_Error: Error_Enum; Logger: Logger_Type'Class; Message: String);
 
    generic
@@ -36,11 +42,10 @@ package Boiler.RDF_Recursive_Descent is
          end record;
 
       -- TODO: condition to restrict Node to only URI or Blank
-      not overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      not overriding function Parse (Context: Parser_Context_Type;
                                      Parser: Base_Predicate_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
-                                     Node: Node_Type_Without_Finalize'Class;
-                                     Logger: Logger_Type'Class)
+                                     Node: Node_Type_Without_Finalize'Class)
                                      return Data_Type
                                      is abstract;
 
@@ -55,11 +60,10 @@ package Boiler.RDF_Recursive_Descent is
             On_Error: Error_Enum := Ignore;
          end record;
 
-      not overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      not overriding function Parse (Context: Parser_Context_Type;
                                      Parser: Base_Node_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
-                                     Node: Node_Type_Without_Finalize'Class;
-                                     Logger: Logger_Type'Class)
+                                     Node: Node_Type_Without_Finalize'Class)
                                      return Data_Type
                                      is abstract;
 
@@ -74,11 +78,10 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      overriding function Parse (Context: Parser_Context_Type;
                                  Parser: One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class;
-                                 Logger: Logger_Type'Class)
+                                 Node: Node_Type_Without_Finalize'Class)
                                  return Child_Type;
    end One_Predicate;
 
@@ -94,11 +97,10 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      overriding function Parse (Context: Parser_Context_Type;
                                  Parser: Zero_One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class;
-                                 Logger: Logger_Type'Class)
+                                 Node: Node_Type_Without_Finalize'Class)
                                  return Holder_Type;
    end Zero_One_Predicate;
 
@@ -125,11 +127,10 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      overriding function Parse (Context: Parser_Context_Type;
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class;
-                                 Logger: Logger_Type'Class)
+                                 Node: Node_Type_Without_Finalize'Class)
                                  return Vectors.Vector;
    end Zero_Or_More_Predicate;
 
@@ -150,18 +151,17 @@ package Boiler.RDF_Recursive_Descent is
          record
             Choices: access Choices_Array;
          end record;
-      overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      overriding function Parse (Context: Parser_Context_Type;
                                  Parser: Choice_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
-                                 Node: Node_Type_Without_Finalize'Class;
-                                 Logger: Logger_Type'Class)
+                                 Node: Node_Type_Without_Finalize'Class)
                                  return Base_Type;
    end Choice;
 
    -- No need to make this conforming to parser API
    -- Raises the exception if not match
    procedure Check_Node_Class (Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
-                               World: Redland_World_Type_Without_Finalize'Class;
+                               Context: Parser_Context_Type;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class);
@@ -178,10 +178,9 @@ package Boiler.RDF_Recursive_Descent is
             Class: URI_Type;
             Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
          end record;
-      function Parse (World: Redland_World_Type_Without_Finalize'Class;
+      function Parse (Context: Parser_Context_Type;
                       Parser: Class_Forest_Parser;
-                      Model: Model_Type_Without_Finalize'Class;
-                      Logger: Logger_Type'Class)
+                      Model: Model_Type_Without_Finalize'Class)
                       return Vectors.Vector;
    end Class_Forest;
 
