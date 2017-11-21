@@ -4,7 +4,6 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    Parser: String_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class;
-                   On_Error: Error_Enum;
                    Logger: Logger_Type'Class)
                    return String is
    begin
@@ -18,7 +17,6 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    Parser: Integer_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class;
-                   On_Error: Error_Enum;
                    Logger: Logger_Type'Class)
                    return Integer is
    begin
@@ -39,7 +37,6 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    Parser: Float_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class;
-                   On_Error: Error_Enum;
                    Logger: Logger_Type'Class)
                    return Long_Float is
    begin
@@ -64,7 +61,6 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    Parser: Boolean_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class;
-                   On_Error: Error_Enum;
                    Logger: Logger_Type'Class)
                    return Boolean is
    begin

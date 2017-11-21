@@ -17,7 +17,7 @@ package Boiler.RDF_Recursive_Descent is
 
    type Error_Enum is (Ignore, Warning, Fatal);
 
-   type Log_Level_Enum is (Warning, Fatal);
+   type Log_Level_Enum is (Debug, Warning, Fatal);
 
    type Logger_Type is tagged private;
 
@@ -29,9 +29,10 @@ package Boiler.RDF_Recursive_Descent is
       type Data_Type (<>) is private;
    package Base_Predicate is
 
-      type Base_Predicate_Parser is abstract tagged
+      type Base_Predicate_Parser is abstract tagged limited
          record
             Predicate: URI_Type;
+            On_Error: Error_Enum := Ignore;
          end record;
 
       -- TODO: condition to restrict Node to only URI or Blank
@@ -39,7 +40,6 @@ package Boiler.RDF_Recursive_Descent is
                                      Parser: Base_Predicate_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
                                      Node: Node_Type_Without_Finalize'Class;
-                                     On_Error: Error_Enum;
                                      Logger: Logger_Type'Class)
                                      return Data_Type
                                      is abstract;
@@ -50,13 +50,15 @@ package Boiler.RDF_Recursive_Descent is
       type Data_Type (<>) is private; -- for indefinite types use indefinite holder
    package Base_Node is
 
-      type Base_Node_Parser is abstract tagged limited null record;
+      type Base_Node_Parser is abstract tagged limited
+         record
+            On_Error: Error_Enum := Ignore;
+         end record;
 
       not overriding function Parse (World: Redland_World_Type_Without_Finalize'Class;
                                      Parser: Base_Node_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
                                      Node: Node_Type_Without_Finalize'Class;
-                                     On_Error: Error_Enum;
                                      Logger: Logger_Type'Class)
                                      return Data_Type
                                      is abstract;
@@ -76,7 +78,6 @@ package Boiler.RDF_Recursive_Descent is
                                  Parser: One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 On_Error: Error_Enum;
                                  Logger: Logger_Type'Class)
                                  return Child_Type;
    end One_Predicate;
@@ -97,7 +98,6 @@ package Boiler.RDF_Recursive_Descent is
                                  Parser: Zero_One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 On_Error: Error_Enum;
                                  Logger: Logger_Type'Class)
                                  return Holder_Type;
    end Zero_One_Predicate;
@@ -129,7 +129,6 @@ package Boiler.RDF_Recursive_Descent is
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 On_Error: Error_Enum;
                                  Logger: Logger_Type'Class)
                                  return Vectors.Vector;
    end Zero_Or_More_Predicate;
@@ -155,7 +154,6 @@ package Boiler.RDF_Recursive_Descent is
                                  Parser: Choice_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class;
-                                 On_Error: Error_Enum;
                                  Logger: Logger_Type'Class)
                                  return Base_Type;
    end Choice;
@@ -183,7 +181,6 @@ package Boiler.RDF_Recursive_Descent is
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Class_Forest_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Vectors.Vector;
    end Class_Forest;

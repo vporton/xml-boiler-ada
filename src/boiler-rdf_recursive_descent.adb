@@ -25,7 +25,6 @@ package body Boiler.RDF_Recursive_Descent is
                       Parser: One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Child_Type is
          Iterator: Node_Iterator_Type :=
@@ -40,7 +39,7 @@ package body Boiler.RDF_Recursive_Descent is
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
             use Node_Parser;
          begin
-            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, On_Error, Logger); -- FIXME
+            return Parse(World, Parser.Child_Parser.all, Model, Child_Node, Logger); -- FIXME
          end;
       end;
 
@@ -52,7 +51,6 @@ package body Boiler.RDF_Recursive_Descent is
                       Parser: Zero_One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Holder_Type is
          Iterator: Node_Iterator_Type :=
@@ -71,7 +69,6 @@ package body Boiler.RDF_Recursive_Descent is
                              Parser.Child_Parser.all,
                              Model,
                              Child_Node,
-                             On_Error, -- FIXME
                              Logger));
          exception
             when Parse_Error =>
@@ -87,7 +84,6 @@ package body Boiler.RDF_Recursive_Descent is
                       Parser: Zero_Or_More_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Vectors.Vector is
          Iter: Node_Iterator_Type :=
@@ -101,7 +97,6 @@ package body Boiler.RDF_Recursive_Descent is
                          Parser.Child_Parser.all,
                          Model,
                          Get_Node(Iter),
-                         On_Error, -- FIXME
                          Logger)));
                exception
                   when Parse_Error =>
@@ -120,14 +115,13 @@ package body Boiler.RDF_Recursive_Descent is
                       Parser: Choice_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Base_Type is
          use Predicate_Parser;
       begin
          for C of Parser.Choices.all loop
             begin
-               return Parse(World, C.all, Model, Node, On_Error=>Ignore, Logger=>Logger);
+               return Parse(World, C.all, Model, Node, Logger);
             exception
                when Parse_Error =>
                   null; -- do next loop iteration
@@ -164,7 +158,6 @@ package body Boiler.RDF_Recursive_Descent is
       function Parse (World: Redland_World_Type_Without_Finalize'Class;
                       Parser: Class_Forest_Parser;
                       Model: Model_Type_Without_Finalize'Class;
-                      On_Error: Error_Enum;
                       Logger: Logger_Type'Class)
                       return Vectors.Vector is
          Pattern: constant Statement_Type :=
@@ -188,7 +181,7 @@ package body Boiler.RDF_Recursive_Descent is
                         use Node_Parser;
                      begin
                         Check_Node_Class(Parser.Is_Subclass, World, Model, Node, Class);
-                        V.Append(Parse(World, Parser.Parser.all, Model, Node, On_Error, Logger)); -- FIXME
+                        V.Append(Parse(World, Parser.Parser.all, Model, Node, Logger)); -- FIXME
                      exception
                         when Parse_Error =>
                            null;
