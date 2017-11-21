@@ -29,7 +29,7 @@ package Boiler.RDF_Recursive_Descent is
          Logger: access Logger_Type'Class;
       end record;
 
-   procedure Raise_Warning (On_Error: Error_Enum; Logger: Logger_Type'Class; Message: String);
+   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String);
 
    generic
       type Data_Type (<>) is private;

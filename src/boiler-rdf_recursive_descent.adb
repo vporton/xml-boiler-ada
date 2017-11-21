@@ -5,16 +5,16 @@ with RDF.Redland.Stream; use RDF.Redland.Stream;
 package body Boiler.RDF_Recursive_Descent is
 
    -- FIXME: Use this procedure below and in Boiler.RDF_Recursive_Descent.Literals
-   procedure Raise_Warning (On_Error: Error_Enum; Logger: Logger_Type'Class; Message: String) is
+   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String) is
    begin
       case On_Error is
          when Ignore =>
             raise Parse_Error with Message;
          when Warning =>
-            Log(Logger, Message, Warning);
+            Log(Context.Logger.all, Message, Warning);
             raise Parse_Error with Message;
          when Fatal =>
-            Log(Logger, Message, Fatal);
+            Log(Context.Logger.all, Message, Fatal);
             raise Fatal_Parse_Error with Message;
       end case;
    end;
