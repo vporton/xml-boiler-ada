@@ -28,6 +28,7 @@ package body Gettext is
       Tmp_Locale: Glibc.Locale.Local_Locale(Locale);
       pragma Unreferenced(Tmp_Locale);
    begin
+      -- FIXME: "Bind_Text_Domain; Text_Domain;" here
       return Gettext(Msg);
    end;
 
