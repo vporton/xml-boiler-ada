@@ -3,7 +3,11 @@ with Interfaces.C; use Interfaces.C;
 
 package Glibc.Locale is
 
+   Locale_Exception: exception;
+
    type Locale_Type is private;
+
+   Empty_Locale: constant Locale_Type;
 
    function New_Locale (Category_Mask: int; Locale: String) return Locale_Type;
 
@@ -26,6 +30,9 @@ private
    overriding procedure Finalize (Object: in out Locale_Type);
 
    overriding procedure Adjust (Object: in out Locale_Type);
+
+   Empty_Locale: constant Locale_Type :=
+     (Ada.Finalization.Controlled with Handle => null);
 
    type Local_Locale (Locale: access Locale_Type) is new Ada.Finalization.Limited_Controlled with
       record

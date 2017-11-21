@@ -8,12 +8,18 @@ package body Glibc.Locale is
         with Import, Convention=>C, External_Name=>"newlocale";
       Handle: constant locale_t := Internal(Category_Mask, To_C(Locale), null);
    begin
+      if Handle = null then
+         raise Locale_Exception with "Cannot create locale.";
+      end if;
       return (Ada.Finalization.Controlled with Handle => Handle);
    end New_Locale;
 
    function Use_Locale (Locale: Locale_Type) return Locale_Type is
       Handle: constant locale_t := uselocale(Locale.Handle);
    begin
+      if Handle = null then
+         raise Locale_Exception with "Cannot use locale.";
+      end if;
       return (Ada.Finalization.Controlled with Handle => Handle);
    end Use_Locale;
 
@@ -21,6 +27,9 @@ package body Glibc.Locale is
       procedure Internal (Locale: locale_t)
         with Import, Convention=>C, External_Name=>"freelocale";
    begin
+      if Object.Handle = null then
+         return;
+      end if;
       Internal(Object.Handle);
       Object.Handle := null;
    end Finalize;
@@ -29,6 +38,9 @@ package body Glibc.Locale is
       function Internal (Locale: locale_t) return locale_t
         with Import, Convention=>C, External_Name=>"duplocale";
    begin
+      if Object.Handle = null then
+         return;
+      end if;
       Object.Handle := Internal(Object.Handle);
    end Adjust;
 
