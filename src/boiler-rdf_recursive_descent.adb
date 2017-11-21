@@ -127,7 +127,7 @@ package body Boiler.RDF_Recursive_Descent is
       begin
          for C of Parser.Choices.all loop
             begin
-               return Parse(World, C.all, Model, Node, On_Error, Logger); -- FIXME
+               return Parse(World, C.all, Model, Node, On_Error=>Ignore, Logger=>Logger);
             exception
                when Parse_Error =>
                   null; -- do next loop iteration
