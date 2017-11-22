@@ -21,12 +21,32 @@
 -- If you need { before a natural number, then double it: {{.
 -- Double {{ and }} are interpreted as single { or }.
 
---  with Ada.Strings.Unbounded;
+private with Ada.Strings.Unbounded;
+with Ada.Containers.Indefinite_Vectors;
 
 package Boiler.Auxiliary.String_Formatter is
 
---     type Arguments_Type is array (Natural range <>) of Ada.Strings.Unbounded.Unbounded_String;
---
---     function Format_String (Format_String: String; Args: Arguments_Type) return String;
+   -- unstable API
+   package Arguments is new Ada.Containers.Indefinite_Vectors(Natural, String);
+
+   -- unstable API
+   function Format_String (Format_String: String; Args: Arguments.Vector) return String;
+
+   type Formatter is private;
+
+   function Fmt (Str: String) return Formatter;
+
+   function To_String (Fmt: Formatter) return String;
+
+   function "&" (Left: Formatter; Right: String ) return Formatter;
+   function "&" (Left: Formatter; Right: Integer) return Formatter;
+
+private
+
+   type Formatter is
+      record
+         Format_String: Ada.Strings.Unbounded.Unbounded_String;
+         Args: Arguments.Vector;
+      end record;
 
 end Boiler.Auxiliary.String_Formatter;
