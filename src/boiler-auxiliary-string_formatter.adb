@@ -58,7 +58,8 @@ package body Boiler.Auxiliary.String_Formatter is
       while I <= Format_String'Last loop
          -- special processing of last character, without lookup of the next character
          if I = Format_String'Last then
-            return To_String(Result & Format_String(I));
+            Append(Result, Format_String(I));
+            return To_String(Result);
          end if;
          case Format_String(I) is
             when '{' =>
@@ -89,7 +90,7 @@ package body Boiler.Auxiliary.String_Formatter is
             when others =>
                null;
          end case;
-         Result := Result & Format_String(I);
+         Append(Result, Format_String(I));
          I := I + 1;
          <<End_Of_Loop>>
       end loop;
