@@ -72,7 +72,7 @@ package body Boiler.Auxiliary.String_Formatter is
                         Placeholder: constant Integer := Extract_Placeholder(Format_String, I);
                      begin
                         if Placeholder /= -1 then
-                           Result := Result & Args(Placeholder);
+                           Append(Result, Args(Placeholder));
                            goto End_Of_Loop; -- var I was already updated
                         end if;
                         -- exit all cases
