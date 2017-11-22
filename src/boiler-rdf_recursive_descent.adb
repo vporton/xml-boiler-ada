@@ -1,21 +1,28 @@
 with RDF.Redland.Statement; use RDF.Redland.Statement;
 with RDF.Redland.Node_Iterator; use RDF.Redland.Node_Iterator;
 with RDF.Redland.Stream; use RDF.Redland.Stream;
+with Gettext_Lib;
 
 package body Boiler.RDF_Recursive_Descent is
+
+   function Gettext (Msg : String) return String renames Gettext_Lib.Gettext;
+
+   function Gettext_Noop (Msg : String) return String renames Gettext_Lib.Gettext_Noop;
+
 
    -- FIXME: Use this procedure below and in Boiler.RDF_Recursive_Descent.Literals
    procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String) is
    begin
       case On_Error is
          when Ignore =>
-            raise Parse_Error with Message;
+            --raise Parse_Error with Message; -- slow
+            raise Parse_Error;
          when Warning =>
             Log(Context.Logger.all, Message, Warning);
-            raise Parse_Error with Message;
+            raise Parse_Error with Gettext(Message);
          when Fatal =>
             Log(Context.Logger.all, Message, Fatal);
-            raise Fatal_Parse_Error with Message;
+            raise Fatal_Parse_Error with Gettext(Message);
       end case;
    end;
 
@@ -32,7 +39,7 @@ package body Boiler.RDF_Recursive_Descent is
          use Predicate_Parser;
       begin
          if Child_Nodes'Length /= 1 then
-            raise Parse_Error;
+            Raise_Warning (Context, Parser.On_Error, Gettext_Noop("XXX")); -- FIXME
          end if;
          declare
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);

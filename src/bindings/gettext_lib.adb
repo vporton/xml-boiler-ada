@@ -1,7 +1,7 @@
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
-package body Gettext is
+package body Gettext_Lib is
 
    procedure Text_Domain (Domain : String := "") is
       procedure Internal (Domain : char_array);
@@ -33,4 +33,4 @@ package body Gettext is
 --        return Gettext(Msg);
 --     end;
 
-end Gettext;
+end Gettext_Lib;

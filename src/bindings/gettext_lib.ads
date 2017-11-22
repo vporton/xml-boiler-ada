@@ -1,4 +1,4 @@
-package Gettext is
+package Gettext_Lib is
 
    procedure Text_Domain (Domain : String := "");
 
@@ -6,6 +6,8 @@ package Gettext is
 
    function Gettext (Msg : String) return String;
 
+   function Gettext_Noop (Msg : String) return String is (Msg);
+
 --     function Gettext (Locale: access Glibc.Locale.Locale_Type; Msg : String) return String;
 
-end Gettext;
+end Gettext_Lib;
