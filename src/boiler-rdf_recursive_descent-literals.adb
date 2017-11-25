@@ -15,9 +15,9 @@
 --  You should have received a copy of the GNU General Public License
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
-package body Boiler.RDF_Recursive_Descent.Literals is
+with Boiler.Auxiliary.String_Formatter; use Boiler.Auxiliary.String_Formatter;
 
-   -- TODO: Use Raise_Warning procedure
+package body Boiler.RDF_Recursive_Descent.Literals is
 
    function Parse (Context: Parser_Context_Type;
                    Parser: String_Literal_Parser;
@@ -26,7 +26,14 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    return String is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#string" then
-         raise Parse_Error;
+         declare
+            function Message return String is
+            begin
+               return To_String(Fmt("Node {1} is not a literal.") & Format_As_String(Node));
+            end;
+         begin
+            Raise_Warning (Context, Parser.On_Error, Message'Access);
+         end;
       end if;
       return As_String(Node);
    end;
@@ -38,7 +45,14 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    return Integer is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#integer" then
-         raise Parse_Error;
+         declare
+            function Message return String is
+            begin
+               return To_String(Fmt("Node {1} is not an integer.") & Format_As_String(Node));
+            end;
+         begin
+            Raise_Warning (Context, Parser.On_Error, Message'Access);
+         end;
       end if;
       declare
          pragma Unsuppress(Range_Check);
@@ -46,7 +60,14 @@ package body Boiler.RDF_Recursive_Descent.Literals is
          return Integer'Value(As_String(Node));
       exception
          when Constraint_Error =>
-            raise Parse_Error;
+            declare
+               function Message return String is
+               begin
+                  return To_String(Fmt("Integer {1} is too big.") & As_String(Node));
+               end;
+            begin
+               Raise_Warning (Context, Parser.On_Error, Message'Access);
+            end;
       end;
    end;
 
@@ -57,7 +78,14 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    return Long_Float is
    begin
       if not Is_Literal(Node) then
-         raise Parse_Error;
+         declare
+            function Message return String is
+            begin
+               return To_String(Fmt("Node {1} is not a floating point number.") & Format_As_String(Node));
+            end;
+         begin
+            Raise_Warning (Context, Parser.On_Error, Message'Access);
+         end;
       end if;
       declare
          Datatype: constant String := As_String(Get_Datatype_URI(Node));
@@ -80,7 +108,14 @@ package body Boiler.RDF_Recursive_Descent.Literals is
                    return Boolean is
    begin
       if not Is_Literal(Node) or else As_String(Get_Datatype_URI(Node)) /= "http://www.w3.org/2001/XMLSchema#boolean" then
-         raise Parse_Error;
+         declare
+            function Message return String is
+            begin
+               return To_String(Fmt("Node {1} is not a boolean.") & Format_As_String(Node));
+            end;
+         begin
+            Raise_Warning (Context, Parser.On_Error, Message'Access);
+         end;
       end if;
       declare
          Str: constant String := As_String(Node);

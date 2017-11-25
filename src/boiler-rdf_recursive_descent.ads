@@ -45,9 +45,11 @@ package Boiler.RDF_Recursive_Descent is
 
    procedure Raise_Warning (Context: Parser_Context_Type;
                             On_Error: Error_Enum;
-                            Message: access function return String);
+                            Message: access function return String)
+     with No_Return;
 
-   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String);
+   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String)
+     with No_Return;
 
    generic
       type Data_Type (<>) is private;
