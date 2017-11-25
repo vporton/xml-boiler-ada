@@ -16,6 +16,7 @@
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
 with Ada.Containers.Indefinite_Holders;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Boiler.RDF_Format.Resource is
 
@@ -25,16 +26,27 @@ package Boiler.RDF_Format.Resource is
 
    package String_Holder is new Ada.Containers.Indefinite_Holders(String);
 
-   type Script_Info is
+   type Script_Info is tagged
+      record
+         Completeness, Stability, Preference: Long_Float; -- or better just Float?
+         Transformer_Kind: Transformer_Kind_Enum; -- unused when validation
+         Validator_Kind  : Validator_Kind_Enum;   -- unused when transforming
+      end record;
+
+   type Command_Script_Info is new Script_Info with
       record
          Language: URI_Type;
          Min_Version, Max_Version: String_Holder.Holder;
          Script_URL:     String_Holder.Holder;
          Command_String: String_Holder.Holder;
          OK_Result: String_Holder.Holder;
-         Completeness, Stability, Preference: Long_Float; -- or better just Float?
-         Transformer_Kind: Transformer_Kind_Enum; -- unused when validation
-         Validator_Kind  : Validator_Kind_Enum;   -- unused when transforming
+      end record;
+
+   type Web_Service_Script_Info is new Script_Info with
+      record
+         Action: RDF.Redland.URI.URI_Type;
+         Method: Unbounded_String;
+         XML_Field: Unbounded_String;
       end record;
 
 end Boiler.RDF_Format.Resource;

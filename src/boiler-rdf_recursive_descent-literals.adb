@@ -63,7 +63,7 @@ package body Boiler.RDF_Recursive_Descent.Literals is
             declare
                function Message return String is
                begin
-                  return To_String(Fmt("Integer {1} is too big.") & As_String(Node));
+                  return To_String(Fmt("Integer {1} is ill-formatted or too big.") & As_String(Node));
                end;
             begin
                Raise_Warning (Context, Parser.On_Error, Message'Access);
