@@ -17,6 +17,8 @@
 
 package body Boiler.RDF_Recursive_Descent.Literals is
 
+   -- TODO: Use Raise_Warning procedure
+
    function Parse (Context: Parser_Context_Type;
                    Parser: String_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;

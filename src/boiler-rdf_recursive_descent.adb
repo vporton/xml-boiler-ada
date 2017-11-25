@@ -19,28 +19,43 @@ with RDF.Redland.Statement; use RDF.Redland.Statement;
 with RDF.Redland.Node_Iterator; use RDF.Redland.Node_Iterator;
 with RDF.Redland.Stream; use RDF.Redland.Stream;
 with Gettext_Lib;
+with Boiler.Auxiliary.String_Formatter; use Boiler.Auxiliary.String_Formatter;
 
 package body Boiler.RDF_Recursive_Descent is
 
    function Gettext (Msg : String) return String renames Gettext_Lib.Gettext;
 
-   function Gettext_Noop (Msg : String) return String renames Gettext_Lib.Gettext_Noop;
+   function Fmt (Str: String) return Boiler.Auxiliary.String_Formatter.Formatter
+                 renames Boiler.Auxiliary.String_Formatter.Fmt;
 
-
-   -- FIXME: Use this procedure below and in Boiler.RDF_Recursive_Descent.Literals
-   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String) is
+   procedure Raise_Warning (Context: Parser_Context_Type;
+                            On_Error: Error_Enum;
+                            Message: access function return String) is
    begin
       case On_Error is
          when Ignore =>
-            --raise Parse_Error with Message; -- slow
             raise Parse_Error;
          when Warning =>
-            Log(Context.Logger.all, Message, Warning);
-            raise Parse_Error with Gettext(Message);
+            declare
+               Msg: constant String := Message.all;
+            begin
+               Log(Context.Logger.all, Msg, Warning);
+               raise Parse_Error with Msg;
+            end;
          when Fatal =>
-            Log(Context.Logger.all, Message, Fatal);
-            raise Fatal_Parse_Error with Gettext(Message);
+            declare
+               Msg: constant String := Message.all;
+            begin
+               Log(Context.Logger.all, Msg, Fatal);
+               raise Fatal_Parse_Error with Msg;
+            end;
       end case;
+   end;
+
+   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String) is
+      function Handler return String is (Message);
+   begin
+      Raise_Warning(Context, On_Error, Handler'Access);
    end;
 
    package body One_Predicate is
@@ -56,7 +71,16 @@ package body Boiler.RDF_Recursive_Descent is
          use Predicate_Parser;
       begin
          if Child_Nodes'Length /= 1 then
-            Raise_Warning (Context, Parser.On_Error, Gettext_Noop("XXX")); -- FIXME
+            declare
+               function Message return String is
+               begin
+                  return To_String(Fmt(Gettext("Exactly one predicate <{1}> required for node {2}.")) &
+                                     As_String(Parser.Predicate) &
+                                     Format_As_String(Node));
+               end;
+            begin
+               Raise_Warning (Context, Parser.On_Error, Message'Access);
+            end;
          end if;
          declare
             Child_Node: constant Node_Type := Child_Nodes(Child_Nodes'First);
@@ -145,8 +169,17 @@ package body Boiler.RDF_Recursive_Descent is
                   null; -- do next loop iteration
             end;
          end loop;
-         raise Parse_Error; -- no variant found
-      end;
+         declare
+            function Message return String is
+            begin
+               return To_String(Fmt("For predicate <{1}> on node {2} there is no known object.") &
+                                  As_String(Parser.Predicate) &
+                                  Format_As_String(Node));
+            end;
+         begin
+            Raise_Warning (Context, Parser.On_Error, Message'Access);
+         end;
+      end Parse;
 
    end Choice;
 
@@ -154,7 +187,8 @@ package body Boiler.RDF_Recursive_Descent is
                                Context: Parser_Context_Type;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
-                               Class: URI_Type_Without_Finalize'Class) is
+                               Class: URI_Type_Without_Finalize'Class;
+                               On_Error: Error_Enum := Ignore) is
       Iterator: Node_Iterator_Type :=
         Get_Targets(Model, Node, From_URI_String(Context.World.all, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
    begin
@@ -168,7 +202,16 @@ package body Boiler.RDF_Recursive_Descent is
          end;
          Next(Iterator);
       end loop;
-      raise Parse_Error;
+      declare
+         function Message return String is
+         begin
+            return To_String(Fmt("Node {1} class is not a subclass of <{2}>") &
+                               Format_As_String(Node) &
+                               As_String(Class));
+         end;
+      begin
+         Raise_Warning (Context, On_Error, Message'Access);
+      end;
    end;
 
    package body Class_Forest is

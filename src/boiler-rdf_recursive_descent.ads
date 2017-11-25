@@ -27,9 +27,6 @@ package Boiler.RDF_Recursive_Descent is
    -- WARNING: Don't use this parser to parse recursive data structures,
    -- because it may lead to infinite recursion on circular RDF.
 
-   -- TODO: Logger and booelan mode whether produce a warning on a subconstuct
-   -- TODO: Another option to make an error fatal
-
    Parse_Error, Fatal_Parse_Error: exception;
 
    type Error_Enum is (Ignore, Warning, Fatal);
@@ -45,6 +42,10 @@ package Boiler.RDF_Recursive_Descent is
          World : access Redland_World_Type_Without_Finalize'Class;
          Logger: access Logger_Type'Class;
       end record;
+
+   procedure Raise_Warning (Context: Parser_Context_Type;
+                            On_Error: Error_Enum;
+                            Message: access function return String);
 
    procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String);
 
@@ -181,7 +182,8 @@ package Boiler.RDF_Recursive_Descent is
                                Context: Parser_Context_Type;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
-                               Class: URI_Type_Without_Finalize'Class);
+                               Class: URI_Type_Without_Finalize'Class;
+                               On_Error: Error_Enum := Ignore);
 
    -- Finds trees having root of a given class (or subclasses)
    generic
