@@ -20,17 +20,24 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Boiler.RDF_Format.Resource is
 
+   type Script_Kind_Enum is (Transformer, Validator);
+
    type Transformer_Kind_Enum is (Entire, Sequential, Up_Down, Down_Up);
 
    type Validator_Kind_Enum is (Entire, Parts);
 
    package String_Holder is new Ada.Containers.Indefinite_Holders(String);
 
-   type Script_Info is tagged
+   type Script_Info (Script_Kind: Script_Kind_Enum) is tagged
       record
          Completeness, Stability, Preference: Long_Float; -- or better just Float?
-         Transformer_Kind: Transformer_Kind_Enum; -- unused when validation
-         Validator_Kind  : Validator_Kind_Enum;   -- unused when transforming
+         -- TODO: Distinguishing transformer and validator scripts does not conform to the specification
+         case Script_Kind is
+            when Transformer =>
+               Transformer_Kind: Transformer_Kind_Enum;
+            when Validator =>
+               Validator_Kind  : Validator_Kind_Enum;
+         end case;
       end record;
 
    type Command_Script_Info is new Script_Info with
