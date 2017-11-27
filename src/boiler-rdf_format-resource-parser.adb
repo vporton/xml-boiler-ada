@@ -15,23 +15,17 @@
 --  You should have received a copy of the GNU General Public License
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
-package Boiler.RDF_Format.Resource.Parser is
+package body Boiler.RDF_Format.Resource.Parser is
 
-   -- TODO: Move the below into package body?
-
-   subtype Script_Info_Class is Script_Info'Class; -- necessary due https://gcc.gnu.org/bugzilla/show_bug.cgi?id=83188
-
-   package Base_Script_Info_Node is new Base_Node(Script_Info'Class);
-
-   type Script_Info_Parser is new Base_Script_Info_Node.Base_Node_Parser with
-      record
-         Script_Kind: Script_Kind_Enum;
-      end record;
-
-   overriding function Parse (Context: Parser_Context_Type;
-                              Parser: Script_Info_Parser;
-                              Model: Model_Type_Without_Finalize'Class;
-                              Node: Node_Type_Without_Finalize'Class)
-                              return Script_Info_Class;
+   function Parse (Context: Parser_Context_Type;
+                   Parser: Script_Info_Parser;
+                   Model: Model_Type_Without_Finalize'Class;
+                   Node: Node_Type_Without_Finalize'Class)
+                   return Script_Info_Class is
+   begin
+      -- FIXME
+      pragma Warnings(Off);
+      return Parse (Context, Parser, Model, Node);
+   end;
 
 end Boiler.RDF_Format.Resource.Parser;
