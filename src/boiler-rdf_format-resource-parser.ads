@@ -15,8 +15,6 @@
 --  You should have received a copy of the GNU General Public License
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
-package body Boiler.RDF_Format.Resource is
+package Boiler.RDF_Format.Resource.Parser is
 
-
-
-end Boiler.RDF_Format.Resource;
+end Boiler.RDF_Format.Resource.Parser;
