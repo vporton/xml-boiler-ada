@@ -37,16 +37,23 @@ package Boiler.RDF_Format.Resource is
                Transformer_Kind: Transformer_Kind_Enum;
             when Validator =>
                Validator_Kind  : Validator_Kind_Enum;
+               OK_Result: String_Holder.Holder;
          end case;
       end record;
 
-   type Command_Script_Info is new Script_Info with
+   type Command_Script_Invocation is (Command, URL);
+
+   type Command_Script_Info (Script_Kind: Script_Kind_Enum; Invocation: Command_Script_Invocation) is
+     new Script_Info(Script_Kind) with
       record
          Language: URI_Type;
          Min_Version, Max_Version: String_Holder.Holder;
-         Script_URL:     String_Holder.Holder;
-         Command_String: String_Holder.Holder;
-         OK_Result: String_Holder.Holder;
+         case Invocation is
+            when Command =>
+               Command_String: String_Holder.Holder;
+            when URL =>
+               Script_URL:     String_Holder.Holder;
+         end case;
       end record;
 
    type Web_Service_Script_Info is new Script_Info with
