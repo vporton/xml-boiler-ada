@@ -21,7 +21,7 @@ package Boiler.RDF_Format.Resource.Parser is
 
    subtype Script_Info_Class is Script_Info'Class; -- necessary due https://gcc.gnu.org/bugzilla/show_bug.cgi?id=83188
 
-   package Base_Script_Info_Node is new Base_Node(Script_Info'Class);
+   package Base_Script_Info_Node is new Base_Node(Script_Info_Class);
 
    type Script_Info_Parser is new Base_Script_Info_Node.Base_Node_Parser with
       record
