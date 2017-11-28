@@ -126,14 +126,26 @@ package Boiler.RDF_Recursive_Descent is
 
    generic
       type Child_Type (<>) is private;
+      Default_Value: Child_Type;
    package Simple_Zero_One_Predicate is
+      function Identity (From: Child_Type) return Child_Type is (From);
+      package Parent is new Zero_One_Predicate(Child_Type,
+                                               Child_Type,
+                                               Identity,
+                                               Default_Value);
+      type Zero_One_Predicate_Parser is new Parent.Zero_One_Predicate_Parser with null record;
+   end Simple_Zero_One_Predicate;
+
+   generic
+      type Child_Type (<>) is private;
+   package Holder_Zero_One_Predicate is
       package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
       package Parent is new Zero_One_Predicate(Child_Type,
                                                Holders.Holder,
                                                Holders.To_Holder,
                                                Holders.Empty_Holder);
       type Zero_One_Predicate_Parser is new Parent.Zero_One_Predicate_Parser with null record;
-   end Simple_Zero_One_Predicate;
+   end Holder_Zero_One_Predicate;
 
    generic
       type Child_Type (<>) is private;

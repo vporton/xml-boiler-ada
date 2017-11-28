@@ -23,6 +23,8 @@ with Boiler.Global;
 
 package Boiler.RDF_Format is
 
+   Main_Namespace: constant URI_String := "http://portonvictor.org/ns/trans/";
+
    type Boiler_Context_Type is new Parser_Context_Type with
       record
          Global: access Boiler.Global.Global_State_Type;
