@@ -28,7 +28,7 @@ package Boiler.RDF_Format.Resource.Parser is
          Script_Kind: Script_Kind_Enum;
       end record;
 
-   overriding function Parse (Context: Parser_Context_Type;
+   overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Script_Info_Parser;
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)

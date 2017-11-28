@@ -24,7 +24,7 @@ with Boiler.Global;
 package Boiler.RDF_Format is
 
    procedure Check_Node_Class (Global: Boiler.Global.Global_State_Type;
-                               Context: Parser_Context_Type;
+                               Context: Parser_Context_Type'Class;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class);

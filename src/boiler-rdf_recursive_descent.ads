@@ -37,18 +37,18 @@ package Boiler.RDF_Recursive_Descent is
 
    procedure Log (Logger: Logger_Type; Message: String; Log_Level: Log_Level_Enum) is null;
 
-   type Parser_Context_Type is
+   type Parser_Context_Type is tagged
       record
          World : access Redland_World_Type_Without_Finalize'Class;
          Logger: access Logger_Type'Class;
       end record;
 
-   procedure Raise_Warning (Context: Parser_Context_Type;
+   procedure Raise_Warning (Context: Parser_Context_Type'Class;
                             On_Error: Error_Enum;
                             Message: access function return String)
      with No_Return;
 
-   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String)
+   procedure Raise_Warning (Context: Parser_Context_Type'Class; On_Error: Error_Enum; Message: String)
      with No_Return;
 
    generic
@@ -62,7 +62,7 @@ package Boiler.RDF_Recursive_Descent is
          end record;
 
       -- TODO: condition to restrict Node to only URI or Blank
-      not overriding function Parse (Context: Parser_Context_Type;
+      not overriding function Parse (Context: Parser_Context_Type'Class;
                                      Parser: Base_Predicate_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
                                      Node: Node_Type_Without_Finalize'Class)
@@ -80,7 +80,7 @@ package Boiler.RDF_Recursive_Descent is
             On_Error: Error_Enum := Ignore;
          end record;
 
-      not overriding function Parse (Context: Parser_Context_Type;
+      not overriding function Parse (Context: Parser_Context_Type'Class;
                                      Parser: Base_Node_Parser;
                                      Model: Model_Type_Without_Finalize'Class;
                                      Node: Node_Type_Without_Finalize'Class)
@@ -98,7 +98,7 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (Context: Parser_Context_Type;
+      overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class)
@@ -117,7 +117,7 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (Context: Parser_Context_Type;
+      overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Zero_One_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class)
@@ -147,7 +147,7 @@ package Boiler.RDF_Recursive_Descent is
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
          end record;
-      overriding function Parse (Context: Parser_Context_Type;
+      overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Zero_Or_More_Predicate_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class)
@@ -171,7 +171,7 @@ package Boiler.RDF_Recursive_Descent is
          record
             Choices: access Choices_Array;
          end record;
-      overriding function Parse (Context: Parser_Context_Type;
+      overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Choice_Parser;
                                  Model: Model_Type_Without_Finalize'Class;
                                  Node: Node_Type_Without_Finalize'Class)
@@ -181,7 +181,7 @@ package Boiler.RDF_Recursive_Descent is
    -- No need to make this conforming to parser API
    -- Raises the exception if not match
    procedure Check_Node_Class (Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
-                               Context: Parser_Context_Type;
+                               Context: Parser_Context_Type'Class;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class;
@@ -199,7 +199,7 @@ package Boiler.RDF_Recursive_Descent is
             Class: URI_Type;
             Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
          end record;
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: Class_Forest_Parser;
                       Model: Model_Type_Without_Finalize'Class)
                       return Vectors.Vector;

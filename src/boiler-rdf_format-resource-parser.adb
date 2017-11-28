@@ -17,7 +17,7 @@
 
 package body Boiler.RDF_Format.Resource.Parser is
 
-   function Parse (Context: Parser_Context_Type;
+   function Parse (Context: Parser_Context_Type'Class;
                    Parser: Script_Info_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class)

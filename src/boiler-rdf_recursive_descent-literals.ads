@@ -21,7 +21,7 @@ package Boiler.RDF_Recursive_Descent.Literals is
 
    type String_Literal_Parser is new String_Node.Base_Node_Parser with null record;
 
-   overriding function Parse (Context: Parser_Context_Type;
+   overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: String_Literal_Parser;
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)
@@ -31,7 +31,7 @@ package Boiler.RDF_Recursive_Descent.Literals is
 
    type Integer_Literal_Parser is new Integer_Node.Base_Node_Parser with null record;
 
-   overriding function Parse (Context: Parser_Context_Type;
+   overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Integer_Literal_Parser;
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)
@@ -41,7 +41,7 @@ package Boiler.RDF_Recursive_Descent.Literals is
 
    type Float_Literal_Parser is new Float_Node.Base_Node_Parser with null record;
 
-   overriding function Parse (Context: Parser_Context_Type;
+   overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Float_Literal_Parser;
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)
@@ -51,7 +51,7 @@ package Boiler.RDF_Recursive_Descent.Literals is
 
    type Boolean_Literal_Parser is new Boolean_Node.Base_Node_Parser with null record;
 
-   overriding function Parse (Context: Parser_Context_Type;
+   overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Boolean_Literal_Parser;
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)

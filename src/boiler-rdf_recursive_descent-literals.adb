@@ -19,7 +19,7 @@ with Boiler.Auxiliary.String_Formatter; use Boiler.Auxiliary.String_Formatter;
 
 package body Boiler.RDF_Recursive_Descent.Literals is
 
-   function Parse (Context: Parser_Context_Type;
+   function Parse (Context: Parser_Context_Type'Class;
                    Parser: String_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class)
@@ -38,7 +38,7 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       return As_String(Node);
    end;
 
-   function Parse (Context: Parser_Context_Type;
+   function Parse (Context: Parser_Context_Type'Class;
                    Parser: Integer_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class)
@@ -71,7 +71,7 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
-   function Parse (Context: Parser_Context_Type;
+   function Parse (Context: Parser_Context_Type'Class;
                    Parser: Float_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class)
@@ -101,7 +101,7 @@ package body Boiler.RDF_Recursive_Descent.Literals is
       end;
    end;
 
-   function Parse (Context: Parser_Context_Type;
+   function Parse (Context: Parser_Context_Type'Class;
                    Parser: Boolean_Literal_Parser;
                    Model: Model_Type_Without_Finalize'Class;
                    Node: Node_Type_Without_Finalize'Class)

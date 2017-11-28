@@ -28,7 +28,7 @@ package body Boiler.RDF_Recursive_Descent is
    function Fmt (Str: String) return Boiler.Auxiliary.String_Formatter.Formatter
                  renames Boiler.Auxiliary.String_Formatter.Fmt;
 
-   procedure Raise_Warning (Context: Parser_Context_Type;
+   procedure Raise_Warning (Context: Parser_Context_Type'Class;
                             On_Error: Error_Enum;
                             Message: access function return String) is
    begin
@@ -52,7 +52,7 @@ package body Boiler.RDF_Recursive_Descent is
       end case;
    end;
 
-   procedure Raise_Warning (Context: Parser_Context_Type; On_Error: Error_Enum; Message: String) is
+   procedure Raise_Warning (Context: Parser_Context_Type'Class; On_Error: Error_Enum; Message: String) is
       function Handler return String is (Message);
    begin
       Raise_Warning(Context, On_Error, Handler'Access);
@@ -60,7 +60,7 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body One_Predicate is
 
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
@@ -94,7 +94,7 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Zero_One_Predicate is
 
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: Zero_One_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
@@ -125,7 +125,7 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Zero_Or_More_Predicate is
 
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: Zero_Or_More_Predicate_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
@@ -154,7 +154,7 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Choice is
 
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: Choice_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
@@ -184,7 +184,7 @@ package body Boiler.RDF_Recursive_Descent is
    end Choice;
 
    procedure Check_Node_Class (Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
-                               Context: Parser_Context_Type;
+                               Context: Parser_Context_Type'Class;
                                Model: Model_Type_Without_Finalize'Class;
                                Node: Node_Type_Without_Finalize'Class;
                                Class: URI_Type_Without_Finalize'Class;
@@ -216,7 +216,7 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Class_Forest is
 
-      function Parse (Context: Parser_Context_Type;
+      function Parse (Context: Parser_Context_Type'Class;
                       Parser: Class_Forest_Parser;
                       Model: Model_Type_Without_Finalize'Class)
                       return Vectors.Vector is
