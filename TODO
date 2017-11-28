@@ -1,3 +1,4 @@
 * maybe rewrite it in D, Rust, or Java (GNAT is too buggy)
+  Also consider Free Pascal.
 
 * Init Gettext as in http://svn.eu.adacore.com/anonsvn/Dev/trunk/GtkAda/src/gtkada-intl.ads
