@@ -73,15 +73,15 @@ package body Boiler.RDF_Format.Resource.Parser is
             Completeness_Parser: constant CSP_Parser.Zero_One_Predicate_Parser :=
               (Predicate => From_String(Context.World.all, Main_Namespace & "completeness"),
                Child_Parser => Float_Parser'Unchecked_Access,
-               others => <>);
+               On_Error => Warning);
             Stability_Parser   : constant CSP_Parser.Zero_One_Predicate_Parser :=
               (Predicate => From_String(Context.World.all, Main_Namespace & "stability"),
                Child_Parser => Float_Parser'Unchecked_Access,
-               others => <>);
+               On_Error => Warning);
             Preference_Parser  : constant CSP_Parser.Zero_One_Predicate_Parser :=
               (Predicate => From_String(Context.World.all, Main_Namespace & "preference"),
                Child_Parser => Float_Parser'Unchecked_Access,
-               others => <>);
+               On_Error => Warning);
          begin
             Info.Completeness := Parse(Context, Completeness_Parser, Model, Node);
             Info.Stability    := Parse(Context, Stability_Parser   , Model, Node);
