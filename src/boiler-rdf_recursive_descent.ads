@@ -52,8 +52,10 @@ package Boiler.RDF_Recursive_Descent is
      with No_Return;
 
    generic
-      type Data_Type (<>) is private;
+      type Data (<>) is private;
    package Base_Predicate is
+
+      subtype Data_Type is Data;
 
       type Base_Predicate_Parser is abstract tagged limited
          record
@@ -72,8 +74,10 @@ package Boiler.RDF_Recursive_Descent is
    end Base_Predicate;
 
    generic
-      type Data_Type (<>) is private; -- for indefinite types use indefinite holder
+      type Data (<>) is private; -- for indefinite types use indefinite holder
    package Base_Node is
+
+      subtype Data_Type is Data;
 
       type Base_Node_Parser is abstract tagged limited
          record
@@ -90,9 +94,9 @@ package Boiler.RDF_Recursive_Descent is
    end Base_Node;
 
    generic
-      type Child_Type (<>) is private;
+      with package Node_Parser is new Base_Node(<>);
    package One_Predicate is
-      package Node_Parser is new Base_Node(Child_Type);
+      subtype Child_Type is Node_Parser.Data_Type;
       package Predicate_Parser is new Base_Predicate(Child_Type);
       type One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
@@ -106,12 +110,12 @@ package Boiler.RDF_Recursive_Descent is
    end One_Predicate;
 
    generic
-      type Child_Type (<>) is private;
+      with package Node_Parser is new Base_Node(<>);
       type Holder_Type (<>) is private;
-      with function To_Holder (From: Child_Type) return Holder_Type;
+      with function To_Holder (From: Node_Parser.Data_Type) return Holder_Type;
       Default_Value: Holder_Type;
    package Zero_One_Predicate is
-      package Node_Parser is new Base_Node(Child_Type);
+      subtype Child_Type is Node_Parser.Data_Type;
       package Predicate_Parser is new Base_Predicate(Holder_Type);
       type Zero_One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
@@ -125,11 +129,12 @@ package Boiler.RDF_Recursive_Descent is
    end Zero_One_Predicate;
 
    generic
-      type Child_Type (<>) is private;
-      Default_Value: Child_Type;
+      with package Node_Parser is new Base_Node(<>);
+      Default_Value: Node_Parser.Data_Type;
    package Simple_Zero_One_Predicate is
+      subtype Child_Type is Node_Parser.Data_Type;
       function Identity (From: Child_Type) return Child_Type is (From);
-      package Parent is new Zero_One_Predicate(Child_Type,
+      package Parent is new Zero_One_Predicate(Node_Parser,
                                                Child_Type,
                                                Identity,
                                                Default_Value);
@@ -137,10 +142,12 @@ package Boiler.RDF_Recursive_Descent is
    end Simple_Zero_One_Predicate;
 
    generic
-      type Child_Type (<>) is private;
+      with package Node_Parser is new Base_Node(<>);
+      with function "=" (Left, Right: Node_Parser.Data_Type) return Boolean is <>;
    package Holder_Zero_One_Predicate is
+      subtype Child_Type is Node_Parser.Data_Type;
       package Holders is new Ada.Containers.Indefinite_Holders(Child_Type);
-      package Parent is new Zero_One_Predicate(Child_Type,
+      package Parent is new Zero_One_Predicate(Node_Parser,
                                                Holders.Holder,
                                                Holders.To_Holder,
                                                Holders.Empty_Holder);
@@ -148,13 +155,13 @@ package Boiler.RDF_Recursive_Descent is
    end Holder_Zero_One_Predicate;
 
    generic
+      with package Node_Parser is new Base_Node(<>);
       type Child_Type (<>) is private;
-      type Temporary_Child_Type (<>) is private;
-      with function Child_Converter (From: Temporary_Child_Type) return Child_Type;
+      with function Child_Converter (From: Node_Parser.Data_Type) return Child_Type;
    package Zero_Or_More_Predicate is
+      subtype Temporary_Child_Type is Node_Parser.Data_Type;
       package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Child_Type); -- It could work faster without "Indefinite"
       package Predicate_Parser is new Base_Predicate(Vectors.Vector);
-      package Node_Parser is new Base_Node(Temporary_Child_Type);
       type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
             Child_Parser: access Node_Parser.Base_Node_Parser'Class;
@@ -167,10 +174,11 @@ package Boiler.RDF_Recursive_Descent is
    end Zero_Or_More_Predicate;
 
    generic
-      type Child_Type (<>) is private;
+      with package Node_Parser is new Base_Node(<>);
    package Simple_Zero_Or_More_Predicate is
+      subtype Child_Type is Node_Parser.Data_Type;
       function Identity (From: Child_Type) return Child_Type is (From);
-      package Parent is new Zero_Or_More_Predicate(Child_Type, Child_Type, Identity);
+      package Parent is new Zero_Or_More_Predicate(Node_Parser, Child_Type, Identity);
       type Zero_Or_More_Predicate_Parser is new Parent.Zero_Or_More_Predicate_Parser with null record;
    end Simple_Zero_Or_More_Predicate;
 
@@ -181,7 +189,7 @@ package Boiler.RDF_Recursive_Descent is
       type Choices_Array is array(Natural range <>) of access Predicate_Parser.Base_Predicate_Parser'Class;
       type Choice_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Choices: access Choices_Array;
+            Choices: access Choices_Array; -- FIXME: type?
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Choice_Parser;
@@ -201,10 +209,11 @@ package Boiler.RDF_Recursive_Descent is
 
    -- Finds trees having root of a given class (or subclasses)
    generic
-      type Base_Type (<>) is private;
+      with package Node_Parser is new Base_Node(<>);
+      with function "=" (Left, Right: Node_Parser.Data_Type) return Boolean is <>;
    package Class_Forest is
+      subtype Base_Type is Node_Parser.Data_Type;
       package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Base_Type); -- It could work faster without "Indefinite"
-      package Node_Parser is new Base_Node(Base_Type);
       type Class_Forest_Parser is tagged
          record
             Parser: access Node_Parser.Base_Node_Parser'Class;
