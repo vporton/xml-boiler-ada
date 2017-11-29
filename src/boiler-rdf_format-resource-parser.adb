@@ -22,7 +22,7 @@ package body Boiler.RDF_Format.Resource.Parser is
 
    use all type URI_String;
 
-   package Script_Info_Predicate        is new Base_Predicate(Script_Info_Class);
+   package Script_Info_Node             is new Base_Node(Script_Info_Class);
    package Base_Script_Info_Node        is new Base_Node(Script_Info);
    package Command_Script_Info_Node     is new Base_Node(Script_Info_Class);
    package Web_Service_Script_Info_Node is new Base_Node(Script_Info_Class);
@@ -138,24 +138,26 @@ package body Boiler.RDF_Format.Resource.Parser is
       begin
          -- FIXME: Specify correct Invocation
          return Info: constant Script_Info_Class :=
-           Web_Service_Script_Info'(Base_Info with
-                                    others => <>)
+           Web_Service_Script_Info'(Base_Info with others => <>)
          do
             null; -- TODO
          end return;
       end;
    end;
 
-   package Script_Choice is new Choice(Script_Info_Predicate);
+   package Script_Choice is new Choice(Script_Info_Node);
 
    function Parse_Script (Context: Parser_Context_Type'Class;
                           Model: Model_Type_Without_Finalize'Class;
                           Node: Node_Type_Without_Finalize'Class;
                           Script_Kind: Script_Kind_Enum)
                           return Script_Info_Class is
-      --List: Choices_Array :=
+      Command_Parser: aliased constant Command_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
+      Web_Service_Parser: aliased constant Web_Service_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
+      List: aliased Script_Choice.Choices_Array := (Command_Parser'Access, Web_Service_Parser'Access);
+      Parser: constant Script_Choice.Choice_Parser := (Choices => List'Access);
    begin
-      null; -- TODO
+      return Parse(Context, Parser, Model, Node);
    end;
 
 end Boiler.RDF_Format.Resource.Parser;

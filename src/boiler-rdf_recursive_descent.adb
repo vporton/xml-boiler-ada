@@ -154,12 +154,13 @@ package body Boiler.RDF_Recursive_Descent is
 
    package body Choice is
 
+      -- FIXME
       function Parse (Context: Parser_Context_Type'Class;
                       Parser: Choice_Parser;
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
                       return Base_Type is
-         use Predicate_Parser;
+         use Node_Parser;
       begin
          for C of Parser.Choices.all loop
             begin
@@ -172,8 +173,7 @@ package body Boiler.RDF_Recursive_Descent is
          declare
             function Message return String is
             begin
-               return To_String(Fmt("For predicate <{1}> on node {2} there is no known object.") &
-                                  As_String(Parser.Predicate) &
+               return To_String(Fmt("On node {1} there is no known object.") &
                                   Format_As_String(Node));
             end;
          begin
