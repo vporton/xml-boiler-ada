@@ -42,7 +42,8 @@ package body Boiler.RDF_Format.Resource.Parser is
                               Model: Model_Type_Without_Finalize'Class;
                               Node: Node_Type_Without_Finalize'Class)
                               return Script_Info is
-      package CSP_Parser is new Simple_Zero_One_Predicate(Long_Float, 1.0);
+      package CSP_Parser is new Simple_Zero_One_Predicate(Float_Node, 1.0);
+      use CSP_Parser;
    begin
       -- No need to check the namespace because this function can be called only from below Parse functions
       --Check_Node_Class (Context, Model, Node, From_String(Context.World, Main_Namespace & "??"));
@@ -51,12 +52,16 @@ package body Boiler.RDF_Format.Resource.Parser is
             Float_Parser: aliased Float_Literal_Parser;
             Completeness_Parser: constant CSP_Parser.Zero_One_Predicate_Parser :=
               (Predicate => From_String(Context.World.all, Main_Namespace & "completeness"),
-               Child_Parser => Float_Node.Base_Node_Parser'Class(Float_Parser)'Access,
-               On_Error => <>);
+               Child_Parser => Float_Parser'Unchecked_Access,
+               others => <>);
             Stability_Parser   : constant CSP_Parser.Zero_One_Predicate_Parser :=
-              (Predicate => From_String(Context.World.all, Main_Namespace & "stability"));
+              (Predicate => From_String(Context.World.all, Main_Namespace & "stability"),
+               Child_Parser => Float_Parser'Unchecked_Access,
+               others => <>);
             Preference_Parser  : constant CSP_Parser.Zero_One_Predicate_Parser :=
-              (Predicate => From_String(Context.World.all, Main_Namespace & "preference"));
+              (Predicate => From_String(Context.World.all, Main_Namespace & "preference"),
+               Child_Parser => Float_Parser'Unchecked_Access,
+               others => <>);
          begin
             Info.Completeness := Parse(Context, Completeness_Parser, Model, Node);
             Info.Stability    := Parse(Context, Stability_Parser   , Model, Node);
