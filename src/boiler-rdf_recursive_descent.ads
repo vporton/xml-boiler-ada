@@ -186,6 +186,7 @@ package Boiler.RDF_Recursive_Descent is
       with package Node_Parser is new Base_Node(<>);
    package Choice is
       subtype Base_Type is Node_Parser.Data_Type;
+      -- FIXME: Using Node_Parser.Base_Node_Parser for both seems a nonsense
       type Choices_Array is array(Natural range <>) of access Node_Parser.Base_Node_Parser'Class;
       type Choice_Parser is new Node_Parser.Base_Node_Parser with
          record
