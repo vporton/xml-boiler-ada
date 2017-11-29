@@ -44,9 +44,9 @@ package body Boiler.RDF_Recursive_Descent.Enums is
          end;
       end if;
       declare
-         URI: constant URI_Type_Without_Finalize := Get_URI(Node);
+         URI: constant URI_Type := Copy(Get_URI(Node));
          use URL_Map_Impl;
-         C: constant URL_Map_Impl.Cursor := Find(Parser.Map, Copy(URI));
+         C: constant URL_Map_Impl.Cursor := Find(Parser.Map, URI);
       begin
          if C = No_Element then
             declare
@@ -58,7 +58,7 @@ package body Boiler.RDF_Recursive_Descent.Enums is
                Raise_Warning(Context, Parser.On_Error, Message'Access);
             end;
          end if;
-         return Parser.Map(Copy(URI));
+         return Parser.Map(URI);
       end;
    end;
 
