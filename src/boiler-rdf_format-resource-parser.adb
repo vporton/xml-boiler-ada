@@ -23,7 +23,6 @@ package body Boiler.RDF_Format.Resource.Parser is
    use all type URI_String;
 
    package Base_Script_Info_Node is new Base_Node(Script_Info);
-   package Script_Info_Node      is new Base_Node(Script_Info_Class);
 
    type Base_Script_Info_Parser is new Base_Script_Info_Node.Base_Node_Parser with
       record
@@ -143,19 +142,21 @@ package body Boiler.RDF_Format.Resource.Parser is
       end;
    end;
 
-   package Script_Choice is new Choice(Script_Info_Node);
-
-   function Parse_Script (Context: Parser_Context_Type'Class;
-                          Model: Model_Type_Without_Finalize'Class;
-                          Node: Node_Type_Without_Finalize'Class;
-                          Script_Kind: Script_Kind_Enum)
-                          return Script_Info_Class is
-      Command_Parser: aliased constant Command_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
-      Web_Service_Parser: aliased constant Web_Service_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
+   function Parse (Context: Parser_Context_Type'Class;
+                   Parser: Script_Info_Parser;
+                   Model: Model_Type_Without_Finalize'Class;
+                   Node: Node_Type_Without_Finalize'Class)
+                   return Script_Info_Class
+   is
+      package Script_Choice is new Choice(Script_Info_Node);
+      Command_Parser: aliased constant Command_Script_Info_Parser :=
+        (Script_Kind => Parser.Script_Kind, others => <>);
+      Web_Service_Parser: aliased constant Web_Service_Script_Info_Parser :=
+        (Script_Kind => Parser.Script_Kind, others => <>);
       List: aliased Script_Choice.Choices_Array := (Command_Parser'Unchecked_Access, Web_Service_Parser'Unchecked_Access);
-      Parser: constant Script_Choice.Choice_Parser := (Choices => List'Unchecked_Access, others => <>);
+      Real_Parser: constant Script_Choice.Choice_Parser := (Choices => List'Unchecked_Access, others => <>);
    begin
-      return Script_Choice.Parse(Context, Parser, Model, Node);
+      return Script_Choice.Parse(Context, Real_Parser, Model, Node);
    end;
 
 end Boiler.RDF_Format.Resource.Parser;
