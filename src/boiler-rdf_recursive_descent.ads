@@ -57,6 +57,7 @@ package Boiler.RDF_Recursive_Descent is
 
       subtype Data_Type is Data;
 
+      -- TODO: Maybe move On_Error field into concrete derived types? (because it is not used everywhere)
       type Base_Predicate_Parser is abstract tagged limited
          record
             Predicate: URI_Type;
