@@ -22,7 +22,7 @@ package body Boiler.RDF_Format.Resource.Parser is
 
    use all type URI_String;
 
-   package Script_Info_Node             is new Base_Node(Script_Info_Class);
+   package Script_Info_Predicate        is new Base_Predicate(Script_Info_Class);
    package Base_Script_Info_Node        is new Base_Node(Script_Info);
    package Command_Script_Info_Node     is new Base_Node(Script_Info_Class);
    package Web_Service_Script_Info_Node is new Base_Node(Script_Info_Class);
@@ -146,13 +146,14 @@ package body Boiler.RDF_Format.Resource.Parser is
       end;
    end;
 
-   package Script_Choice is new Choice(Script_Info_Class);
+   package Script_Choice is new Choice(Script_Info_Predicate);
 
    function Parse_Script (Context: Parser_Context_Type'Class;
                           Model: Model_Type_Without_Finalize'Class;
                           Node: Node_Type_Without_Finalize'Class;
                           Script_Kind: Script_Kind_Enum)
                           return Script_Info_Class is
+      --List: Choices_Array :=
    begin
       null; -- TODO
    end;

@@ -183,13 +183,13 @@ package Boiler.RDF_Recursive_Descent is
    end Simple_Zero_Or_More_Predicate;
 
    generic
-      type Base_Type (<>) is private;
+      with package Predicate_Parser is new Base_Predicate(<>);
    package Choice is
-      package Predicate_Parser is new Base_Predicate(Base_Type);
-      type Choices_Array is array(Natural range <>) of access Predicate_Parser.Base_Predicate_Parser'Class;
+      subtype Base_Type is Predicate_Parser.Data_Type;
+      type Choices_Array is array(Natural range <>) of access Predicate_Parser.Base_Predicate_Parser'Class; -- FIXME: It isn't predicate parser
       type Choice_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Choices: access Choices_Array; -- FIXME: type?
+            Choices: access Choices_Array;
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Choice_Parser;
