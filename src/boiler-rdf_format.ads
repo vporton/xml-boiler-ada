@@ -19,7 +19,7 @@ with RDF.Redland.URI; use RDF.Redland.URI;
 with RDF.Redland.Node; use RDF.Redland.Node;
 with RDF.Redland.Model; use RDF.Redland.Model;
 with Boiler.RDF_Recursive_Descent; use Boiler.RDF_Recursive_Descent;
-with Boiler.Global;
+limited with Boiler.Global;
 
 package Boiler.RDF_Format is
 

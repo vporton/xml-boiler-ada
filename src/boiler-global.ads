@@ -18,6 +18,8 @@
 with Ada.Finalization;
 with Boiler.Directories; use Boiler.Directories;
 with RDF.Redland.URI; use RDF.Redland.URI;
+with Boiler.RDF_Recursive_Descent.Enums;
+with Boiler.RDF_Format.Resource;
 private with Ada.Containers.Ordered_Maps;
 private with Generic_Directed_Graph;
 private with Generic_Address_Order;
@@ -30,6 +32,20 @@ package Boiler.Global is
    function Get_Directories (Global: Global_State_Type) return access constant Directories_Config_Type;
 
    function Is_Subclass (Global: Global_State_Type; Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
+
+   package Transformer_Kind_Parser is
+      new Boiler.RDF_Recursive_Descent.Enums(Boiler.RDF_Format.Resource.Transformer_Kind_Enum);
+
+   package Validator_Kind_Parser is
+      new Boiler.RDF_Recursive_Descent.Enums(Boiler.RDF_Format.Resource.Validator_Kind_Enum);
+
+   type Global_Parsers is
+      record
+         Transformer_Kind: Transformer_Kind_Parser.Enum_Parser;
+         Validator_Kind  : Validator_Kind_Parser.Enum_Parser;
+      end record;
+
+   function Get_Parsers (Global: Global_State_Type) return access constant Global_Parsers;
 
 private
 
@@ -50,6 +66,7 @@ private
          Directories_Config: aliased Boiler.Directories.Directories_Config_Type;
 --           Initialization_Redland_World: Redland_World_Type;
          URIs_Map: URI_To_Access.Map;
+         Parsers: aliased Global_Parsers;
       end record;
 
    overriding procedure Initialize (Object: in out Global_State_Type);

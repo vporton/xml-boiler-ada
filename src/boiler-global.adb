@@ -24,10 +24,9 @@ with RDF.Redland.Stream; use RDF.Redland.Stream;
 
 package body Boiler.Global is
 
-   procedure Initialize (Object: in out Global_State_Type) is
---        World: World_Type renames Object.Initialization_Redland_World;
-      World: Redland_World_Type;
-      Storage: Storage_Type := Create(World, "memory", "initialization");
+   procedure Initialize_Subclass_Graph (Object: in out Global_State_Type;
+                                        World: Redland_World_Type;
+                                        Storage: Storage_Type) is
       Model: Model_Type := Create(World, Storage);
    begin
       Load(Model, From_Filename(World, Get_Data_Dir(Object.Directories_Config) & "/subclasses.rdf"));
@@ -68,6 +67,33 @@ package body Boiler.Global is
       end;
    end;
 
+   procedure Initialize_Parsers (Object: in out Global_State_Type; World: Redland_World_Type) is
+      function U (Str: URI_String) return URI_Type is (From_String(World, Str));
+      use Boiler.RDF_Format;
+      use Boiler.RDF_Format.Resource;
+      use all type URI_String;
+      Transformer_Kind_Arr: constant Transformer_Kind_Parser.Enum_Value_List :=
+        ((U(Main_Namespace & "entire"), Entire),
+         (U(Main_Namespace & "sequential"), Sequential),
+         (U(Main_Namespace & "upDown"), Up_Down),
+         (U(Main_Namespace & "downUp"), Down_Up));
+      Validator_Kind_Arr: constant Validator_Kind_Parser.Enum_Value_List :=
+        ((U(Main_Namespace & "entire"), Entire),
+         (U(Main_Namespace & "parts"), Parts));
+   begin
+      Transformer_Kind_Parser.Init (Object.Parsers.Transformer_Kind, Transformer_Kind_Arr);
+      Validator_Kind_Parser.  Init (Object.Parsers.Validator_Kind  , Validator_Kind_Arr  );
+   end;
+
+   procedure Initialize (Object: in out Global_State_Type) is
+--        World: World_Type renames Object.Initialization_Redland_World;
+      World: Redland_World_Type;
+      Storage: Storage_Type := Create(World, "memory", "initialization");
+   begin
+      Initialize_Subclass_Graph(Object, World, Storage);
+      Initialize_Parsers(Object, World);
+   end;
+
    -- TODO: Add caching for speed?
    function Is_Subclass (Global: Global_State_Type; Sub, Super: URI_Type_Without_Finalize'Class) return Boolean is
       Sub2  : constant URI_Type := Copy(Sub  );
@@ -88,5 +114,8 @@ package body Boiler.Global is
    begin
       return Global.Directories_Config'Unchecked_Access;
    end;
+
+   function Get_Parsers (Global: Global_State_Type) return access constant Global_Parsers is
+     (Global.Parsers'Unchecked_Access);
 
 end Boiler.Global;

@@ -15,6 +15,8 @@
 --  You should have received a copy of the GNU General Public License
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
+with Boiler.Global;
+
 package body Boiler.RDF_Format is
 
    procedure Check_Node_Class (Context: Boiler_Context_Type'Class;

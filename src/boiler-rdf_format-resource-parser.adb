@@ -87,7 +87,7 @@ package body Boiler.RDF_Format.Resource.Parser is
             Info.Stability    := Parse(Context, Stability_Parser   , Model, Node);
             Info.Preference   := Parse(Context, Preference_Parser  , Model, Node);
          end;
-         -- TODO: Transformer and Validator Info
+         -- TODO: Transformer and Validator Info (hint: use Global.Get_Parsers)
          case Parser.Script_Kind is
             when Transformer =>
                null;
