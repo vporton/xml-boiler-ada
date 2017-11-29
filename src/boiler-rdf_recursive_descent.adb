@@ -160,7 +160,7 @@ package body Boiler.RDF_Recursive_Descent is
                       Model: Model_Type_Without_Finalize'Class;
                       Node: Node_Type_Without_Finalize'Class)
                       return Base_Type is
-         use Child_Parser;
+         use Sub_Parser;
       begin
          for C of Parser.Choices.all loop
             begin
