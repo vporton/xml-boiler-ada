@@ -40,6 +40,10 @@ package Boiler.RDF_Recursive_Descent.Enums is
 
    type Enum_Value_List is array (Integer range <>) of Enum_Value_Descr;
 
+   -- Don't call it more than once
+   not overriding procedure Init (Parser: in out Enum_Parser; Mapping: Enum_Value_List);
+
+   -- Unused
    not overriding function Create (Mapping: Enum_Value_List) return Enum_Parser;
 
 private

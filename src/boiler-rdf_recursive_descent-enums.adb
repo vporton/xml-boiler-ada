@@ -62,12 +62,17 @@ package body Boiler.RDF_Recursive_Descent.Enums is
       end;
    end;
 
+   procedure Init (Parser: in out Enum_Parser; Mapping: Enum_Value_List) is
+   begin
+      for Pair of Mapping loop
+         Parser.Map.Insert(Pair.URI, Pair.Value);
+      end loop;
+   end;
+
    function Create (Mapping: Enum_Value_List) return Enum_Parser is
    begin
       return Result: Enum_Parser do
-         for Pair of Mapping loop
-            Result.Map.Insert(Pair.URI, Pair.Value);
-         end loop;
+         Init (Result, Mapping);
       end return;
    end;
 
