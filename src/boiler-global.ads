@@ -39,7 +39,6 @@ package Boiler.Global is
    package Validator_Kind_Parser is
       new Boiler.RDF_Recursive_Descent.Enums(Boiler.RDF_Format.Resource.Validator_Kind_Enum);
 
-   -- FIXME: What's about On_Error for these?
    type Global_Parsers is
       record
          Transformer_Kind: Transformer_Kind_Parser.Enum_Parser;
