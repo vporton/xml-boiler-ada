@@ -15,8 +15,10 @@
 --  You should have received a copy of the GNU General Public License
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
-with Boiler.RDF_Recursive_Descent.Literals; use Boiler.RDF_Recursive_Descent.Literals;
 with RDF.Redland.URI; use RDF.Redland.URI;
+with Boiler.RDF_Recursive_Descent; use Boiler.RDF_Recursive_Descent;
+with Boiler.RDF_Recursive_Descent.Literals; use Boiler.RDF_Recursive_Descent.Literals;
+with Boiler.Global;
 
 package body Boiler.RDF_Format.Resource.Parser is
 
@@ -64,6 +66,7 @@ package body Boiler.RDF_Format.Resource.Parser is
                               return Script_Info is
       package CSP_Parser is new Simple_Zero_One_Predicate(Float_Node, 1.0);
       use CSP_Parser;
+      function U (Str: URI_String) return URI_Type is (From_String(Context.World.all, Str));
    begin
       -- No need to check the namespace because this function can be called only from below Parse functions
       --Check_Node_Class (Context, Model, Node, From_String(Context.World, Main_Namespace & "??"));
@@ -71,15 +74,15 @@ package body Boiler.RDF_Format.Resource.Parser is
          declare
             Float_Parser: aliased Float_Literal_Parser;
             Completeness_Parser: constant CSP_Parser.Zero_One_Predicate_Parser :=
-              (Predicate => From_String(Context.World.all, Main_Namespace & "completeness"),
+              (Predicate => U(Main_Namespace & "completeness"),
                Child_Parser => Float_Parser'Unchecked_Access,
                On_Error => Warning);
             Stability_Parser   : constant CSP_Parser.Zero_One_Predicate_Parser :=
-              (Predicate => From_String(Context.World.all, Main_Namespace & "stability"),
+              (Predicate => U(Main_Namespace & "stability"),
                Child_Parser => Float_Parser'Unchecked_Access,
                On_Error => Warning);
             Preference_Parser  : constant CSP_Parser.Zero_One_Predicate_Parser :=
-              (Predicate => From_String(Context.World.all, Main_Namespace & "preference"),
+              (Predicate => U(Main_Namespace & "preference"),
                Child_Parser => Float_Parser'Unchecked_Access,
                On_Error => Warning);
          begin
@@ -87,13 +90,34 @@ package body Boiler.RDF_Format.Resource.Parser is
             Info.Stability    := Parse(Context, Stability_Parser   , Model, Node);
             Info.Preference   := Parse(Context, Preference_Parser  , Model, Node);
          end;
-         -- TODO: Transformer and Validator Info (hint: use Global.Get_Parsers)
-         case Parser.Script_Kind is
-            when Transformer =>
-               null;
-            when Validator =>
-               null;
-         end case;
+         declare
+            Parsers: Boiler.Global.Global_Parsers renames
+              Boiler.Global.Get_Parsers(Boiler_Context_Type(Context).Global.all).all;
+            use Boiler.Global;
+         begin
+            case Parser.Script_Kind is
+               when Transformer =>
+                  declare
+                     package My_Enum_Parser is new One_Predicate(Transformer_Kind_Parser.Enum_Parser_Node);
+                     Transformer_Kind_P: constant My_Enum_Parser.One_Predicate_Parser :=
+                       (Predicate => U(Main_Namespace & "transformerKind"),
+                        Child_Parser => Parsers.Transformer_Kind'Access,
+                        On_Error => Warning);
+                  begin
+                     Info.Transformer_Kind := My_Enum_Parser.Parse(Context, Transformer_Kind_P, Model, Node);
+                  end;
+               when Validator =>
+                  declare
+                     package My_Enum_Parser is new One_Predicate(Validator_Kind_Parser.Enum_Parser_Node);
+                     Validator_Kind_P: constant My_Enum_Parser.One_Predicate_Parser :=
+                       (Predicate => U(Main_Namespace & "validatorKind"),
+                        Child_Parser => Parsers.Validator_Kind'Access,
+                        On_Error => Warning);
+                  begin
+                     Info.Validator_Kind := My_Enum_Parser.Parse(Context, Validator_Kind_P, Model, Node);
+                  end;
+            end case;
+         end;
       end return;
    end;
 

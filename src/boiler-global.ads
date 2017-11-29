@@ -41,8 +41,8 @@ package Boiler.Global is
 
    type Global_Parsers is
       record
-         Transformer_Kind: Transformer_Kind_Parser.Enum_Parser;
-         Validator_Kind  : Validator_Kind_Parser.Enum_Parser;
+         Transformer_Kind: aliased Transformer_Kind_Parser.Enum_Parser;
+         Validator_Kind  : aliased Validator_Kind_Parser.Enum_Parser;
       end record;
 
    function Get_Parsers (Global: Global_State_Type) return access constant Global_Parsers;
