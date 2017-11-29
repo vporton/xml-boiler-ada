@@ -22,10 +22,8 @@ package body Boiler.RDF_Format.Resource.Parser is
 
    use all type URI_String;
 
-   package Script_Info_Node             is new Base_Node(Script_Info_Class);
-   package Base_Script_Info_Node        is new Base_Node(Script_Info);
-   package Command_Script_Info_Node     is new Base_Node(Script_Info_Class);
-   package Web_Service_Script_Info_Node is new Base_Node(Script_Info_Class);
+   package Base_Script_Info_Node is new Base_Node(Script_Info);
+   package Script_Info_Node      is new Base_Node(Script_Info_Class);
 
    type Base_Script_Info_Parser is new Base_Script_Info_Node.Base_Node_Parser with
       record
@@ -38,7 +36,7 @@ package body Boiler.RDF_Format.Resource.Parser is
                               Node: Node_Type_Without_Finalize'Class)
                               return Script_Info;
 
-   type Command_Script_Info_Parser is new Command_Script_Info_Node.Base_Node_Parser with
+   type Command_Script_Info_Parser is new Script_Info_Node.Base_Node_Parser with
       record
          Script_Kind: Script_Kind_Enum;
       end record;
@@ -49,7 +47,7 @@ package body Boiler.RDF_Format.Resource.Parser is
                               Node: Node_Type_Without_Finalize'Class)
                               return Script_Info_Class;
 
-   type Web_Service_Script_Info_Parser is new Web_Service_Script_Info_Node.Base_Node_Parser with
+   type Web_Service_Script_Info_Parser is new Script_Info_Node.Base_Node_Parser with
       record
          Script_Kind: Script_Kind_Enum;
       end record;
@@ -154,10 +152,10 @@ package body Boiler.RDF_Format.Resource.Parser is
                           return Script_Info_Class is
       Command_Parser: aliased constant Command_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
       Web_Service_Parser: aliased constant Web_Service_Script_Info_Parser := (Script_Kind => Script_Kind, others => <>);
-      List: aliased Script_Choice.Choices_Array := (Command_Parser'Access, Web_Service_Parser'Access);
-      Parser: constant Script_Choice.Choice_Parser := (Choices => List'Access);
+      List: aliased Script_Choice.Choices_Array := (Command_Parser'Unchecked_Access, Web_Service_Parser'Unchecked_Access);
+      Parser: constant Script_Choice.Choice_Parser := (Choices => List'Unchecked_Access, others => <>);
    begin
-      return Parse(Context, Parser, Model, Node);
+      return Script_Choice.Parse(Context, Parser, Model, Node);
    end;
 
 end Boiler.RDF_Format.Resource.Parser;
