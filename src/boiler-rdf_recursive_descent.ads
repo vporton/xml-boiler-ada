@@ -183,12 +183,12 @@ package Boiler.RDF_Recursive_Descent is
    end Simple_Zero_Or_More_Predicate;
 
    generic
-      with package Node_Parser is new Base_Node(<>);
+      with package Child_Parser is new Base_Node(<>);
    package Choice is
-      subtype Base_Type is Node_Parser.Data_Type;
-      -- FIXME: Using Node_Parser.Base_Node_Parser for both seems a nonsense
-      type Choices_Array is array(Natural range <>) of access Node_Parser.Base_Node_Parser'Class;
-      type Choice_Parser is new Node_Parser.Base_Node_Parser with
+      subtype Base_Type is Child_Parser.Data_Type;
+      type Choices_Array is array(Natural range <>) of access Child_Parser.Base_Node_Parser'Class;
+      package Main_Parser is new Base_Node(Base_Type);
+      type Choice_Parser is new Main_Parser.Base_Node_Parser with
          record
             Choices: access Choices_Array;
          end record;
