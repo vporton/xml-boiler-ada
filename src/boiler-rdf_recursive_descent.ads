@@ -100,7 +100,7 @@ package Boiler.RDF_Recursive_Descent is
       package Predicate_Parser is new Base_Predicate(Child_Type);
       type One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
+            Child_Parser: access constant Node_Parser.Base_Node_Parser'Class;
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: One_Predicate_Parser;
@@ -119,7 +119,7 @@ package Boiler.RDF_Recursive_Descent is
       package Predicate_Parser is new Base_Predicate(Holder_Type);
       type Zero_One_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
+            Child_Parser: access constant Node_Parser.Base_Node_Parser'Class;
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Zero_One_Predicate_Parser;
@@ -164,7 +164,7 @@ package Boiler.RDF_Recursive_Descent is
       package Predicate_Parser is new Base_Predicate(Vectors.Vector);
       type Zero_Or_More_Predicate_Parser is new Predicate_Parser.Base_Predicate_Parser with
          record
-            Child_Parser: access Node_Parser.Base_Node_Parser'Class;
+            Child_Parser: access constant Node_Parser.Base_Node_Parser'Class;
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Zero_Or_More_Predicate_Parser;
@@ -189,7 +189,7 @@ package Boiler.RDF_Recursive_Descent is
       type Choices_Array is array(Natural range <>) of access constant Sub_Parser.Base_Node_Parser'Class;
       type Choice_Parser is new Sub_Parser.Base_Node_Parser with
          record
-            Choices: access Choices_Array;
+            Choices: access constant Choices_Array;
          end record;
       overriding function Parse (Context: Parser_Context_Type'Class;
                                  Parser: Choice_Parser;
@@ -216,7 +216,7 @@ package Boiler.RDF_Recursive_Descent is
       package Vectors is new Ada.Containers.Indefinite_Vectors(Natural, Base_Type); -- It could work faster without "Indefinite"
       type Class_Forest_Parser is tagged
          record
-            Parser: access Node_Parser.Base_Node_Parser'Class;
+            Parser: access constant Node_Parser.Base_Node_Parser'Class;
             Class: URI_Type;
             Is_Subclass: access function (Sub, Super: URI_Type_Without_Finalize'Class) return Boolean;
          end record;
