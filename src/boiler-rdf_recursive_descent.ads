@@ -182,6 +182,7 @@ package Boiler.RDF_Recursive_Descent is
       type Zero_Or_More_Predicate_Parser is new Parent.Zero_Or_More_Predicate_Parser with null record;
    end Simple_Zero_Or_More_Predicate;
 
+   -- FIXME: Does it make sense for other than One_Predicate predicates?
    generic
       with package Predicate_Parser is new Base_Predicate(<>);
    package Choice is
