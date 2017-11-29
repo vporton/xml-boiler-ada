@@ -32,10 +32,33 @@ package body Boiler.RDF_Format.Resource.Parser is
          Script_Kind: Script_Kind_Enum;
       end record;
 
+   overriding function Parse (Context: Parser_Context_Type'Class;
+                              Parser: Base_Script_Info_Parser;
+                              Model: Model_Type_Without_Finalize'Class;
+                              Node: Node_Type_Without_Finalize'Class)
+                              return Script_Info;
+
    type Command_Script_Info_Parser is new Command_Script_Info_Node.Base_Node_Parser with
       record
          Script_Kind: Script_Kind_Enum;
       end record;
+
+   overriding function Parse (Context: Parser_Context_Type'Class;
+                              Parser: Command_Script_Info_Parser;
+                              Model: Model_Type_Without_Finalize'Class;
+                              Node: Node_Type_Without_Finalize'Class)
+                              return Script_Info_Class;
+
+   type Web_Service_Script_Info_Parser is new Web_Service_Script_Info_Node.Base_Node_Parser with
+      record
+         Script_Kind: Script_Kind_Enum;
+      end record;
+
+   overriding function Parse (Context: Parser_Context_Type'Class;
+                              Parser: Web_Service_Script_Info_Parser;
+                              Model: Model_Type_Without_Finalize'Class;
+                              Node: Node_Type_Without_Finalize'Class)
+                              return Script_Info_Class;
 
    overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Base_Script_Info_Parser;
@@ -66,8 +89,14 @@ package body Boiler.RDF_Format.Resource.Parser is
             Info.Completeness := Parse(Context, Completeness_Parser, Model, Node);
             Info.Stability    := Parse(Context, Stability_Parser   , Model, Node);
             Info.Preference   := Parse(Context, Preference_Parser  , Model, Node);
-            -- TODO: Transformer and Validator Info
          end;
+         -- TODO: Transformer and Validator Info
+         case Parser.Script_Kind is
+            when Transformer =>
+               null;
+            when Validator =>
+               null;
+         end case;
       end return;
    end;
 
@@ -77,14 +106,23 @@ package body Boiler.RDF_Format.Resource.Parser is
                               Node: Node_Type_Without_Finalize'Class)
                               return Script_Info_Class is
    begin
-      Check_Node_Class (Context, Model, Node, From_String(Context.World, Main_Namespace & "Command"));
-      -- TODO
+      Check_Node_Class (Boiler_Context_Type(Context), Model, Node, From_String(Context.World.all, Main_Namespace & "Command"));
+      declare
+         Base_Parser: constant Base_Script_Info_Parser := (Script_Kind => Parser.Script_Kind,
+                                                           others => <>);
+         Base_Info: constant Script_Info := Parse(Context, Base_Parser, Model, Node);
+      begin
+         -- FIXME: Specify correct Invocation
+         return Info: constant Script_Info_Class :=
+           Command_Script_Info'(Base_Info with
+                                Script_Kind => Parser.Script_Kind,
+                                Invocation => Command,
+                                others => <>)
+         do
+            null; -- TODO
+         end return;
+      end;
    end;
-
-   type Web_Service_Script_Info_Parser is new Web_Service_Script_Info_Node.Base_Node_Parser with
-      record
-         Script_Kind: Script_Kind_Enum;
-      end record;
 
    overriding function Parse (Context: Parser_Context_Type'Class;
                               Parser: Web_Service_Script_Info_Parser;
@@ -92,8 +130,20 @@ package body Boiler.RDF_Format.Resource.Parser is
                               Node: Node_Type_Without_Finalize'Class)
                               return Script_Info_Class is
    begin
-      Check_Node_Class (Context, Model, Node, From_String(Context.World, Main_Namespace & "WebService"));
-      -- TODO
+      Check_Node_Class (Boiler_Context_Type(Context), Model, Node, From_String(Context.World.all, Main_Namespace & "WebService"));
+      declare
+         Base_Parser: constant Base_Script_Info_Parser := (Script_Kind => Parser.Script_Kind,
+                                                           others => <>);
+         Base_Info: constant Script_Info := Parse(Context, Base_Parser, Model, Node);
+      begin
+         -- FIXME: Specify correct Invocation
+         return Info: constant Script_Info_Class :=
+           Web_Service_Script_Info'(Base_Info with
+                                    others => <>)
+         do
+            null; -- TODO
+         end return;
+      end;
    end;
 
    package Script_Choice is new Choice(Script_Info_Class);
