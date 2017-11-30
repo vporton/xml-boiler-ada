@@ -32,26 +32,29 @@ GPRCLEAN = @GPRCLEAN@
 GPRINSTALL = @GPRINSTALL@ --prefix=$(prefix) --relocate-build-tree
 GNATPREP = @GNATPREP@
 
+GPR_PROJECT_PATH = "@GPR_PROJECT_PATH@"
+
 my-dynamic-lib: src/boiler-config.ads
-	$(GPRBUILD) libxmlboiler.gpr \
+	GPR_PROJECT_PATH=$(GPR_PROJECT_PATH) $(GPRBUILD) libxmlboiler.gpr \
                  -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
 my-static-lib: src/boiler-config.ads
-	$(GPRBUILD) libxmlboiler.gpr \
+	GPR_PROJECT_PATH=$(GPR_PROJECT_PATH) $(GPRBUILD) libxmlboiler.gpr \
                  -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=$(DEBUG_MODE) @GPRBUILDFLAGS@
 
 src/boiler-config.ads: src/boiler-config.ads.in
 	$(GNATPREP) -T -Dsrcdir=\"$(srcdir)\" -Ddatadir=\"$(datadir)\" $< $@
 
 check-syntax:
-	$(GPRBUILD) libxmlboiler.gpr -c \
+	export GPR_PROJECT_PATH=$(GPR_PROJECT_PATH) &&  $(GPRBUILD) libxmlboiler.gpr -c \
                  -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install -XDEBUG_MODE=check @GPRBUILDFLAGS@
 
 all-local: my-dynamic-lib
 
 clean-local:
-	$(GPRCLEAN) -r libxmlboiler.gpr -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install
-	$(GPRCLEAN) -r libxmlboiler.gpr -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install
+	GPR_PROJECT_PATH=$(GPR_PROJECT_PATH) $(GPRCLEAN) -r libxmlboiler.gpr -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install
+	GPR_PROJECT_PATH=$(GPR_PROJECT_PATH) $(GPRCLEAN) -r libxmlboiler.gpr -XLIBRARY_KIND=static -XOBJ_DIR=$(builddir)/obj-static -Xsoversion=$(soname) -XMODE=Install
+	rm $(srcdir)/src/boiler-config.ads
 
 # install-data-local:
 # 	$(GPRINSTALL) -f -p librdf.gpr -XLIBRARY_KIND=dynamic -XOBJ_DIR=$(builddir)/obj-dynamic -Xsoversion=$(soname) -XMODE=Install --build-name=dynamic

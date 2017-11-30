@@ -46,6 +46,8 @@ AC_SUBST(GNATPREP)
 AC_SUBST(GPRBUILDFLAGS)
 AC_ARG_VAR(GPRBUILDFLAGS, [Flags for gprbuild (such as [-cargs opts]])
 
+AC_ARG_VAR(GPR_PROJECT_PATH, "Path for GNAT projects")
+
 
 AM_MISSING_PROG(ACLOCAL, aclocal, $missing_dir)
 AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)

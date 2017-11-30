@@ -1,3 +1,6 @@
+with "components";
+with "librdf";
+
 library project Libxmlboiler is
    type Library_Kind_Type is ("static", "dynamic");
    Library_Kind : Library_Kind_Type := external ("LIBRARY_KIND", "static");
@@ -49,10 +52,6 @@ library project Libxmlboiler is
             for Default_Switches ("ada") use Common_Ada_Flags & Debug_Flags & ();
       end case;
    end Compiler;
-
-   package Linker is
-      for Linker_Options use ("-lrdf-ada");
-   end Linker;
 
    package Builder is
       case Debug_Mode is
