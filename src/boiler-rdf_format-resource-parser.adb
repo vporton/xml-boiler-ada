@@ -157,7 +157,6 @@ package body Boiler.RDF_Format.Resource.Parser is
                                                            others => <>);
          Base_Info: constant Script_Info := Parse(Context, Base_Parser, Model, Node);
       begin
-         -- FIXME: Specify correct Invocation
          return Info: constant Script_Info_Class :=
            Web_Service_Script_Info'(Base_Info with others => <>)
          do
