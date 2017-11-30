@@ -1,4 +1,7 @@
 * maybe rewrite it in D, Rust, or Java (GNAT is too buggy)
   Also consider Free Pascal.
 
+* How to "import" in Python through the network:
+  https://docs.python.org/3/reference/import.html#replacing-the-standard-import-system
+
 * Init Gettext as in http://svn.eu.adacore.com/anonsvn/Dev/trunk/GtkAda/src/gtkada-intl.ads
