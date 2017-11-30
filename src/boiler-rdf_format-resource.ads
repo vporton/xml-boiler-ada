@@ -50,9 +50,9 @@ package Boiler.RDF_Format.Resource is
          Min_Version, Max_Version: String_Holder.Holder;
          case Invocation is
             when Command =>
-               Command_String: String_Holder.Holder;
+               Command_String: Unbounded_String;
             when URL =>
-               Script_URL:     String_Holder.Holder;
+               Script_URL:     Unbounded_String;
          end case;
       end record;
 
