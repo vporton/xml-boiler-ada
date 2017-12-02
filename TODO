@@ -5,3 +5,7 @@
   https://docs.python.org/3/reference/import.html#replacing-the-standard-import-system
 
 * Init Gettext as in http://svn.eu.adacore.com/anonsvn/Dev/trunk/GtkAda/src/gtkada-intl.ads
+
+* The upstream version of a Debian package can be deterministically
+  extracted from the package version, see https://www.debian.org/doc/debian-policy/#s-f-version
+  for the format.
