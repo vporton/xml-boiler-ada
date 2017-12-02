@@ -9,3 +9,4 @@
 * The upstream version of a Debian package can be deterministically
   extracted from the package version, see https://www.debian.org/doc/debian-policy/#s-f-version
   for the format.
+  Also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=883133
