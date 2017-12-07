@@ -16,11 +16,15 @@
 --  along with XML Boiler.  If not, see <http://www.gnu.org/licenses/>.
 
 with RDF.Redland.URI; use RDF.Redland.URI;
+with Boiler.Auxiliary.String_Formatter; use Boiler.Auxiliary.String_Formatter;
 with Boiler.RDF_Recursive_Descent; use Boiler.RDF_Recursive_Descent;
 with Boiler.RDF_Recursive_Descent.Literals; use Boiler.RDF_Recursive_Descent.Literals;
 with Boiler.Global;
 
 package body Boiler.RDF_Format.Resource.Parser is
+
+   function Fmt (Str: String) return Boiler.Auxiliary.String_Formatter.Formatter
+                 renames Boiler.Auxiliary.String_Formatter.Fmt;
 
    use all type URI_String;
 
@@ -132,16 +136,44 @@ package body Boiler.RDF_Format.Resource.Parser is
          Base_Parser: constant Base_Script_Info_Parser := (Script_Kind => Parser.Script_Kind,
                                                            others => <>);
          Base_Info: constant Script_Info := Parse(Context, Base_Parser, Model, Node);
+         package Str_Parser_P is new Holder_Zero_One_Predicate(String_Node);
+         Base_Str_Parser: aliased constant String_Literal_Parser := (others => <>);
+         Str_Parser1: Str_Parser_P.Zero_One_Predicate_Parser :=
+           (Predicate => From_String(Context.World.all, Main_Namespace & "scriptURL"),
+            Child_Parser => Base_Str_Parser'Access,
+            On_Error => Warning);
+         Str_Parser2: Str_Parser_P.Zero_One_Predicate_Parser :=
+           (Predicate => From_String(Context.World.all, Main_Namespace & "commandString"),
+            Child_Parser => Base_Str_Parser'Access,
+            On_Error => Warning);
+         use Str_Parser_P;
+         Str1: Str_Parser_P.Holders.Holder := Parse(Context, Str_Parser1, Model, Node);
+         Str2: Str_Parser_P.Holders.Holder := Parse(Context, Str_Parser2, Model, Node);
+         use all type Str_Parser_P.Holders.Holder;
       begin
-         -- FIXME: Specify correct Invocation
-         return Info: constant Script_Info_Class :=
-           Command_Script_Info'(Base_Info with
-                                Script_Kind => Parser.Script_Kind,
-                                Invocation => Command,
-                                others => <>)
-         do
-            null; -- TODO
-         end return;
+         if Is_Empty(Str1) and Is_Empty(Str2) then
+            raise Parse_Error with To_String(Fmt("Both :scriptURL and :commandString can't be missing in node {1}.") & Format_As_String(Node));
+         end if;
+         if not Is_Empty(Str1) and not Is_Empty(Str2) then
+            raise Parse_Error with To_String(Fmt("Both :scriptURL and :commandString can't be present in node {1}.") & Format_As_String(Node));
+         end if;
+         declare
+            Invocation: constant Command_Script_Invocation := (if Is_Empty(Str1) then Command else URL);
+         begin
+            return Info: constant Script_Info_Class :=
+              Command_Script_Info'(Base_Info with
+                                   Script_Kind => Parser.Script_Kind,
+                                   Invocation => Invocation,
+                                   others => <>)
+            do
+               null; -- TODO
+               if Invocation = Command then
+                  null; -- TODO
+               else
+                  null; -- TODO
+               end if;
+            end return;
+         end;
       end;
    end;
 
