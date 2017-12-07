@@ -1,4 +1,4 @@
-* maybe rewrite it in D, Rust, or Java (GNAT is too buggy)
+* maybe rewrite it in D, Rust, or Java or C# (GNAT is too buggy)
   Also consider Free Pascal.
 
 * How to "import" in Python through the network:
