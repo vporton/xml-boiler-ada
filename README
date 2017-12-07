@@ -1,3 +1,11 @@
+THIS PROJECT WAS DISCONTINUED because of many bugs in GNAT
+(the Ada compiler). I decided to rewrite it in C#, see
+https://github.com/vporton/xml-boiler
+
+GNAT 7.2.0 crashes attempting to compile this project.
+
+=====================================================================
+
 Automatically transform between XML namespaces.
 
 https://en.wikiversity.org/wiki/Automatic_transformation_of_XML_namespaces
