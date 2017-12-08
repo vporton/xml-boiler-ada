@@ -1,5 +1,5 @@
 THIS PROJECT WAS DISCONTINUED because of many bugs in GNAT
-(the Ada compiler). I decided to rewrite it in C#, see
+(the Ada compiler). I decided to rewrite it in Java, see
 https://github.com/vporton/xml-boiler
 
 GNAT 7.2.0 crashes attempting to compile this project.
